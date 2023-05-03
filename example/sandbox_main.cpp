@@ -30,7 +30,5 @@ int main(int argc, char* argv[])
     w.setWindowTitle("Node Editor");
     w.show();
 
-    ne->addDebugContent();
-
     return a.exec();
 }

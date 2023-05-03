@@ -11,10 +11,12 @@ public:
     NodeGraphWidget(QWidget* parent = nullptr);
     ~NodeGraphWidget();
 
-    // Temporary Method
-    void addDebugContent();
     QPoint getOrigin();
 
 private:
     QGraphicsScene* m_GraphicsScene;
+
+private:
+    void addDebugContent();
+
 };

@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QPen>
 #include <QBrush>
+#include <QGraphicsItem>
 
 NodeGraphWidget::NodeGraphWidget(QWidget* parent)
     : QWidget(parent)
@@ -34,7 +35,7 @@ void NodeGraphWidget::addDebugContent()
     outlinePen.setWidth(1.0f);
 
     auto rect = m_GraphicsScene->addRect(QRect(getOrigin().x(), getOrigin().y(), 300, 300), outlinePen, greenBrush);
-    m_GraphicsScene->update();
+    rect->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 }
 
 QPoint NodeGraphWidget::getOrigin()
