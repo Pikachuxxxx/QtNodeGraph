@@ -13,6 +13,7 @@ public:
 
     // Temporary Method
     void addDebugContent();
+    QPoint getOrigin();
 
 private:
     QGraphicsScene* m_GraphicsScene;

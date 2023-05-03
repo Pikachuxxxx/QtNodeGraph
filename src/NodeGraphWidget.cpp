@@ -31,8 +31,13 @@ void NodeGraphWidget::addDebugContent()
 {
     QBrush greenBrush(Qt::green);
     QPen outlinePen(Qt::black);
-    outlinePen.setWidth(0.0f);
+    outlinePen.setWidth(1.0f);
+
+    auto rect = m_GraphicsScene->addRect(QRect(getOrigin().x(), getOrigin().y(), 300, 300), outlinePen, greenBrush);
     m_GraphicsScene->update();
-    auto rect = m_GraphicsScene->addRect(QRect(m_GraphicsScene->sceneRect().width() / 2, m_GraphicsScene->sceneRect().height() / 2, 300, 300), outlinePen, greenBrush);
-    m_GraphicsScene->update();
+}
+
+QPoint NodeGraphWidget::getOrigin()
+{
+    return QPoint(m_GraphicsScene->sceneRect().width() / 2, m_GraphicsScene->sceneRect().height() / 2);
 }

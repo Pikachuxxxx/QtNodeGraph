@@ -38,10 +38,7 @@ void NodeGraphicsScene::drawBackground(QPainter *painter, const QRectF &rect)
     int32_t right = int32_t(ceil(rect.right()));
 
     int32_t first_left = left - (left % m_GridSize);
-    // first_left -= first_left % 10;
     int32_t first_top = top - (top % m_GridSize);
-
-    std::cout << first_left << ", " << first_left % 10 << std::endl;
 
     for (int32_t x = first_left; x < right; x += m_GridSize){
         if(x % (m_GridSize * m_GridSquares) != 0) lines_light.push_back(QLine(x, top, x, bottom));
@@ -49,12 +46,8 @@ void NodeGraphicsScene::drawBackground(QPainter *painter, const QRectF &rect)
     }
 
     for (int32_t y = first_top; y < bottom; y += m_GridSize){
-            if(y % (m_GridSize * m_GridSquares) != 0){
-                lines_light.push_back(QLine(left, y, right, y));
-        }
-        else {
-            lines_dark.push_back(QLine(left, y, right, y));
-        }
+        if(y % (m_GridSize * m_GridSquares) != 0) lines_light.push_back(QLine(left, y, right, y));
+        else lines_dark.push_back(QLine(left, y, right, y));
     }
 
     painter->setPen(m_LightPen);
