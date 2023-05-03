@@ -16,9 +16,8 @@ NodeGraphWidget::NodeGraphWidget(QWidget* parent)
 
     m_GraphicsScene = new NodeGraphicsScene;
 
-    QGraphicsView* view = new QGraphicsView;
-    view->setScene(m_GraphicsScene);
-    layout->addWidget(view);
+    m_GraphicsView = new NodeGraphicsView(m_GraphicsScene);
+    layout->addWidget(m_GraphicsView);
 
     addDebugContent();
 }
@@ -36,6 +35,10 @@ void NodeGraphWidget::addDebugContent()
 
     auto rect = m_GraphicsScene->addRect(QRect(getOrigin().x(), getOrigin().y(), 300, 300), outlinePen, greenBrush);
     rect->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
+
+    auto text = m_GraphicsScene->addText("Test text");
+    text->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
+    text->setPos(getOrigin());
 }
 
 QPoint NodeGraphWidget::getOrigin()
