@@ -14,9 +14,9 @@ NodeGraphWidget::NodeGraphWidget(QWidget* parent)
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
 
-    m_GraphicsScene = new NodeGraphicsScene;
+    m_Scene = new NodeScene;
 
-    m_GraphicsView = new NodeGraphicsView(m_GraphicsScene);
+    m_GraphicsView = new NodeGraphicsView(m_Scene->getGraphicsScene());
     layout->addWidget(m_GraphicsView);
 
     addDebugContent();
@@ -33,15 +33,15 @@ void NodeGraphWidget::addDebugContent()
     QPen outlinePen(Qt::black);
     outlinePen.setWidth(1.0f);
 
-    auto rect = m_GraphicsScene->addRect(QRect(getOrigin().x(), getOrigin().y(), 300, 300), outlinePen, greenBrush);
+    auto rect = m_Scene->getGraphicsScene()->addRect(QRect(getOrigin().x(), getOrigin().y(), 300, 300), outlinePen, greenBrush);
     rect->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 
-    auto text = m_GraphicsScene->addText("Test text");
+    auto text = m_Scene->getGraphicsScene()->addText("Test text");
     text->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
     text->setPos(getOrigin());
 }
 
 QPoint NodeGraphWidget::getOrigin()
 {
-    return QPoint(m_GraphicsScene->sceneRect().width() / 2, m_GraphicsScene->sceneRect().height() / 2);
+    return QPoint(m_Scene->getGraphicsScene()->sceneRect().width() / 2, m_Scene->getGraphicsScene()->sceneRect().height() / 2);
 }

@@ -3,8 +3,8 @@
 #include <QWidget>
 #include <QGraphicsView>
 
-#include "NodeGraphicsScene.h"
 #include "NodeGraphicsView.h"
+#include "NodeScene.h"
 
 class NodeGraphWidget : public QWidget
 {
@@ -15,7 +15,7 @@ public:
     QPoint getOrigin();
 
 private:
-    NodeGraphicsScene* m_GraphicsScene;
+    NodeScene* m_Scene;
     NodeGraphicsView* m_GraphicsView;
 
 private:
