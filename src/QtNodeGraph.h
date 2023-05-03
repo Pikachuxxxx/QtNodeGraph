@@ -1,3 +1,4 @@
 #pragma  once
 
-#include "NodeGraphicsView.h"
+#include "NodeGraphicsScene.h"
+#include "NodeGraphWidget.h"
