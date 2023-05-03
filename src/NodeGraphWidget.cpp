@@ -1,10 +1,14 @@
 #include "NodeGraphWidget.h"
 
 #include <QVBoxLayout>
+#include <QPen>
+#include <QBrush>
 
 NodeGraphWidget::NodeGraphWidget(QWidget* parent)
     : QWidget(parent)
 {
+    setGeometry(200, 200, 800, 600);
+
     QVBoxLayout* layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
@@ -14,9 +18,21 @@ NodeGraphWidget::NodeGraphWidget(QWidget* parent)
     QGraphicsView* view = new QGraphicsView;
     view->setScene(m_GraphicsScene);
     layout->addWidget(view);
+
+    addDebugContent();
 }
 
 NodeGraphWidget::~NodeGraphWidget()
 {
 
+}
+
+void NodeGraphWidget::addDebugContent()
+{
+    QBrush greenBrush(Qt::green);
+    QPen outlinePen(Qt::black);
+    outlinePen.setWidth(0.0f);
+    m_GraphicsScene->update();
+    auto rect = m_GraphicsScene->addRect(QRect(m_GraphicsScene->sceneRect().width() / 2, m_GraphicsScene->sceneRect().height() / 2, 300, 300), outlinePen, greenBrush);
+    m_GraphicsScene->update();
 }

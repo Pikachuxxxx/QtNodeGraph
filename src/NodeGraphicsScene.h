@@ -14,8 +14,13 @@ public:
 private:
     QColor m_BGColor;
     QColor m_LightColor;
-    uint32_t m_SceneWidth = 64000;
-    uint32_t m_SceneHeight = 64000;
+    QColor m_DarkColor;
+
+    uint32_t m_SceneWidth = 10000;
+    uint32_t m_SceneHeight = 10000;
     QPen m_LightPen;
-    uint32_t m_GridSize = 50;
+    QPen m_DarkPen;
+
+    uint32_t m_GridSize = 20;
+    uint32_t m_GridSquares = 5;
 };

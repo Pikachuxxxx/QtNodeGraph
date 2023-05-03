@@ -15,6 +15,7 @@ public:
 int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
+    a.setApplicationName("Node Editor App");
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
@@ -28,6 +29,8 @@ int main(int argc, char* argv[])
     w.setCentralWidget(widget);
     w.setWindowTitle("Node Editor");
     w.show();
+
+    ne->addDebugContent();
 
     return a.exec();
 }
