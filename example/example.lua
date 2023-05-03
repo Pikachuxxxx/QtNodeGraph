@@ -25,14 +25,13 @@ project "example"
    -- will return an error since it won't be able to find the path
    -- to your Qt installation.
    --
-   qtpath "C:/Qt/Qt_msvc_dir/msvc2017_64"
 
    --
    -- Setup which Qt modules will be used. This also apply to the
    -- current configuration, so can you choose to deactivate a module
    -- for a specific configuration.
    --
-   qtmodules { "core", "gui", "widgets", "opengl" }
+   qtmodules { "core", "gui", "widgets" }
 
    --
    -- Setup the prefix of the Qt libraries. Usually it's Qt4 for Qt 4.x
@@ -42,7 +41,6 @@ project "example"
    --
    qtprefix "Qt5"
 
-   qtbinpath "C:/Qt/Qt_msvc_dir/msvc2017_64/bin"
 
    qtgenerateddir "%{prj.location}/../example/generated"
 
@@ -69,6 +67,11 @@ project "example"
         systemversion "latest"
         characterset ("MBCS")
         editandcontinue "Off"
+
+    filter "system:macosx"
+        systemversion "12.0"
+        qtbinpath "/Users/phanisrikar/Qt/5.15.2/clang_64/bin"
+        qtpath "/Users/phanisrikar/Qt/5.15.2/clang_64"
 
         filter "configurations:Debug"
             defines { "_DEBUG" }

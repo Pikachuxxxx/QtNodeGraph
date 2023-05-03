@@ -20,5 +20,10 @@ workspace "QtNodeGraph"
         "Release"
     }
 
+    buildoptions
+    {
+        "-stdlib=libc++"
+    }
+
     include "QtNodeGraph.lua"
     include "example/example.lua"
