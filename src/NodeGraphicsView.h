@@ -38,6 +38,37 @@ public:
             QGraphicsView::mouseReleaseEvent(event);
     }
 
-private:
+    void wheelEvent(QWheelEvent* event) override
+    {
+        float zoomOutFactor = 1.0f / zoomInFactor;
 
+        if(event->angleDelta().y() > 0){
+            zoomFactor = zoomInFactor;
+            zoom += zoomStep;
+        } else{
+            zoomFactor = zoomOutFactor;
+            zoom -= zoomStep;
+        }
+
+        bool clamped = false;
+        if(zoom < zoomRangeMin) {
+            zoom = zoomRangeMin;
+            clamped = true;
+        }
+        else if(zoom > zoomRangeMax){
+            zoom = zoomRangeMax;
+            clamped = true;
+        }
+
+        if(!clamped)
+            scale(zoomFactor, zoomFactor);
+    }
+
+private:
+    float zoomInFactor = 1.25f;
+    float zoom = 10.0f;
+    float zoomStep = 1.0f;
+    float zoomRangeMin = 0.0f;
+    float zoomRangeMax = 10.0f;
+    float zoomFactor = 1.0f;
 };

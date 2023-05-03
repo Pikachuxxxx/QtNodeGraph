@@ -11,4 +11,6 @@ NodeGraphicsView::NodeGraphicsView(NodeGraphicsScene* scene, QWidget* parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+
 }
