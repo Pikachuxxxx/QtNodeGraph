@@ -7,7 +7,7 @@
 
 NodeGraphicsScene::NodeGraphicsScene()
 {
-    m_BGColor = QColor("#393939");
+    m_BGColor = QColor("#ff00ff");
     m_LightColor = QColor("#2f2f2f");
     m_DarkColor = QColor("#111111");
 
@@ -34,6 +34,8 @@ QPoint NodeGraphicsScene::getOrigin()
 
 void NodeGraphicsScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
+    QGraphicsScene::drawBackground(painter, rect);
+
     std::vector<QLine> lines_light;
     std::vector<QLine> lines_dark;
 
