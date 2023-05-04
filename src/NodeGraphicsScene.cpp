@@ -7,9 +7,9 @@
 
 NodeGraphicsScene::NodeGraphicsScene()
 {
-    m_BGColor = QColor("#ff00ff");
+    m_BGColor = QColor("#393939");
     m_LightColor = QColor("#2f2f2f");
-    m_DarkColor = QColor("#111111");
+    m_DarkColor = QColor("#292929");
 
     m_LightPen.setColor(m_LightColor);
     m_LightPen.setWidth(1.0f);

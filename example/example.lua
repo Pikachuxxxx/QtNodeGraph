@@ -67,6 +67,8 @@ project "example"
         systemversion "latest"
         characterset ("MBCS")
         editandcontinue "Off"
+        qtpath "C:/Qt/Qt_msvc_dir/msvc2017_64"
+        qtbinpath "C:/Qt/Qt_msvc_dir/msvc2017_64/bin"
 
     filter "system:macosx"
         systemversion "12.0"
