@@ -5,6 +5,8 @@
 #include <QBrush>
 #include <QGraphicsItem>
 
+#include "Node.h"
+
 NodeGraphWidget::NodeGraphWidget(QWidget* parent)
     : QWidget(parent)
 {
@@ -19,7 +21,8 @@ NodeGraphWidget::NodeGraphWidget(QWidget* parent)
     m_GraphicsView = new NodeGraphicsView(m_Scene->getGraphicsScene());
     layout->addWidget(m_GraphicsView);
 
-    addDebugContent();
+    // addDebugContent();
+    auto node = new Node(m_Scene, "Test Node");
 }
 
 NodeGraphWidget::~NodeGraphWidget()

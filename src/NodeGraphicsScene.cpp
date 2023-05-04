@@ -27,6 +27,11 @@ NodeGraphicsScene::~NodeGraphicsScene()
 
 }
 
+QPoint NodeGraphicsScene::getOrigin()
+{
+    return QPoint(sceneRect().width() / 2, sceneRect().height() / 2);
+}
+
 void NodeGraphicsScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
     std::vector<QLine> lines_light;

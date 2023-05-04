@@ -9,6 +9,8 @@ public:
     NodeGraphicsScene();
     ~NodeGraphicsScene();
 
+    QPoint getOrigin();
+    
     void drawBackground(QPainter *painter, const QRectF &rect) override;
 
 private:
