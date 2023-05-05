@@ -1,26 +1,38 @@
 #include "GraphicsNode.h"
 
+#include <QGraphicsProxyWidget>
+
 #include "Node.h"
 #include "NodeScene.h"
+#include "NodeContentWidget.h"
 
-GraphicsNode::GraphicsNode(Node* node, std::string title)
+GraphicsNode::GraphicsNode(Node* node)
     : node(node)
 {
     this->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
     this->setPos(node->getScene()->getOrigin().x(), node->getScene()->getOrigin().y());
     titleItem = new QGraphicsTextItem(this);
-    titleItem->setPlainText(title.c_str());
+    titleItem->setPlainText(node->getTitle().c_str());
     titleItem->setDefaultTextColor(Qt::white);
     titleItem->setTextWidth(width - 2 * padding);
     titleItem->setPos(padding, 0);
 
-    penDefault = QPen(QColor("#7f000000"));
+    penDefault = QPen(QColor("#7f000000")); // ARGB
     penDefault.setWidth(2);
     penSelected = QPen(QColor("#FFFFA637"));
     penSelected.setWidth(2);
 
     titleBrush = QBrush(QColor("#FF313131"));
     bgBrush = QBrush(QColor("#E3212121"));
+
+    initContent();
+}
+
+void GraphicsNode::initContent()
+{
+    auto grContent = new QGraphicsProxyWidget(this);
+    node->getContent()->setGeometry(QRect(edge_size, titleHeight + edge_size, width - 2 * edge_size, height - 2 * edge_size - titleHeight));
+    grContent->setWidget(node->getContent());
 }
 
 void GraphicsNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

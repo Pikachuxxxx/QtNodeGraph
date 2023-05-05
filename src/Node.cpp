@@ -2,11 +2,13 @@
 
 #include "NodeScene.h"
 #include "GraphicsNode.h"
+#include "NodeContentWidget.h"
 
 Node::Node(NodeScene* scene, std::string nodeName)
     : scene(scene), title(nodeName)
 {
-    graphicsNode = new GraphicsNode(this, title);
+    nodeContent = new NodeContentWidget;
+    graphicsNode = new GraphicsNode(this);
 
     scene->addNode(this);
     scene->getGraphicsScene()->addItem(graphicsNode);

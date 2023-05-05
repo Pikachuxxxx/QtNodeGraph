@@ -9,8 +9,10 @@ class Node;
 class GraphicsNode : public QGraphicsItem
 {
 public:
-    GraphicsNode(Node* node, std::string title);
+    GraphicsNode(Node* node);
     ~GraphicsNode() {}
+
+    void initContent();
 
     QRectF boundingRect() const override { return QRectF(0,0,2*edge_size + width,2*edge_size+height).normalized(); }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
