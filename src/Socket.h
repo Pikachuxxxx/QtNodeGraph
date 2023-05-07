@@ -7,18 +7,16 @@ class GraphicsSocket;
 
 enum SocketPos
 {
-    TOP_LEFT,
-    BOTTOM_LEFT,
-    MIDDLE_LEFT,
-    TOP_RIGHT,
-    MIDDLE_RIGHT,
-    BOTTOM_RIGHT
+    LEFT_TOP,
+    LEFT_BOTTOM,
+    RIGHT_TOP,
+    RIGHT_BOTTOM,
 };
 
 class Socket
 {
 public:
-    Socket(Node* node, uint32_t index = 0, SocketPos position = TOP_LEFT);
+    Socket(Node* node, uint32_t index = 0, SocketPos position = LEFT_TOP);
     ~Socket() {}
 
 private:

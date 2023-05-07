@@ -30,5 +30,6 @@ private:
     NodeContentWidget* nodeContent;
     std::vector<Socket*> inputs;
     std::vector<Socket*> outputs;
+    uint32_t socketSpacing = 24;
 
 };

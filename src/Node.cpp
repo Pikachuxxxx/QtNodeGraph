@@ -14,12 +14,12 @@ Node::Node(NodeScene* scene, std::string nodeName, uint32_t inputsCount, uint32_
     scene->getGraphicsScene()->addItem(graphicsNode);
 
     for (size_t i = 0; i < inputsCount; i++) {
-        auto socket = new Socket(this, i, TOP_LEFT);
+        auto socket = new Socket(this, i, LEFT_BOTTOM);
         inputs.push_back(socket);
     }
 
     for (size_t i = 0; i < outputsCount; i++) {
-        auto socket = new Socket(this, i, TOP_RIGHT);
+        auto socket = new Socket(this, i, RIGHT_TOP);
         outputs.push_back(socket);
     }
 }
@@ -32,8 +32,12 @@ Node::~Node()
 QPointF Node::getSocketPosition(uint32_t index, SocketPos pos)
 {
     float x = 0, y = 0;
-    if(pos == TOP_LEFT || pos == BOTTOM_LEFT) x = 0; else x = graphicsNode->getWidth();
-    y = graphicsNode->getTitleHeight() + index * 20;
+    if(pos == LEFT_TOP || pos == LEFT_BOTTOM) x = 0; else x = graphicsNode->getWidth();
+
+    if(pos == LEFT_TOP || pos == RIGHT_TOP)
+        y = graphicsNode->getTitleHeight() + graphicsNode->getEdgeSize() + index * socketSpacing + graphicsNode->getPadding();
+    else if(pos == LEFT_BOTTOM || pos == RIGHT_BOTTOM)
+        y = graphicsNode->getHeight() - graphicsNode->getEdgeSize() - index * socketSpacing - graphicsNode->getPadding();
 
     return QPointF(x, y);
 }

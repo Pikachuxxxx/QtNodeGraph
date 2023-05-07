@@ -15,13 +15,14 @@ public:
     void initSockets();
     void initContent();
 
-    QRectF boundingRect() const override { return QRectF(0,0,2*edge_size + width,2*edge_size+height).normalized(); }
+    QRectF boundingRect() const override { return QRectF(0,0,width,height).normalized(); }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
     uint32_t getWidth() const { return width; }
     uint32_t getHeight() const { return height; }
     uint32_t getTitleHeight() const { return titleHeight; }
-    uint32_t getEdgeSize() const { return edge_size; } 
+    uint32_t getEdgeSize() const { return edge_size; }
+    uint32_t getPadding() const { return padding; }
 private:
     Node* node;
     QColor titleColor;
