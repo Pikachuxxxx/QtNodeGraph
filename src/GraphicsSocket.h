@@ -12,7 +12,7 @@ public:
     GraphicsSocket(QGraphicsItem* parent = nullptr);
     ~GraphicsSocket() {}
 
-    QRectF boundingRect() const override { return QRectF(0,0,radius + outlineWidth,radius + outlineWidth).normalized(); }
+    QRectF boundingRect() const override { return QRectF(-radius - outlineWidth, -radius - outlineWidth, 2 * (radius + outlineWidth), 2 * (radius + outlineWidth)).normalized(); }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
 private:

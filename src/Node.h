@@ -16,6 +16,8 @@ public:
     Node(NodeScene* scene, std::string nodeName, uint32_t inputsCount = 0, uint32_t outputsCount = 0);
     ~Node();
 
+    QPointF getSocketPosition(uint32_t index, SocketPos pos);
+
     NodeScene* getScene() { return scene; }
     const std::string& getTitle() const { return title; }
     NodeContentWidget* getContent() { return nodeContent; }

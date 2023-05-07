@@ -23,7 +23,7 @@ NodeGraphWidget::NodeGraphWidget(QWidget* parent)
     layout->addWidget(m_GraphicsView);
 
     // addDebugContent();
-    auto node = new Node(m_Scene, "Test_Node_0", 2);
+    auto node = new Node(m_Scene, "Test_Node_0", 2, 3);
 }
 
 NodeGraphWidget::~NodeGraphWidget()

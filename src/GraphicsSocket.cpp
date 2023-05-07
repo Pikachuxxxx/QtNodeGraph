@@ -10,7 +10,6 @@ GraphicsSocket::GraphicsSocket(QGraphicsItem* parent)
     pen.setWidthF(outlineWidth);
 
     brush = QBrush(bgColor);
-
 }
 
 void GraphicsSocket::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
