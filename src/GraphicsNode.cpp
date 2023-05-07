@@ -25,7 +25,14 @@ GraphicsNode::GraphicsNode(Node* node)
     titleBrush = QBrush(QColor("#FF313131"));
     bgBrush = QBrush(QColor("#E3212121"));
 
+    initSockets();
+
     initContent();
+}
+
+void GraphicsNode::initSockets()
+{
+    
 }
 
 void GraphicsNode::initContent()

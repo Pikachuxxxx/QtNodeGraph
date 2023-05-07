@@ -12,6 +12,7 @@ public:
     GraphicsNode(Node* node);
     ~GraphicsNode() {}
 
+    void initSockets();
     void initContent();
 
     QRectF boundingRect() const override { return QRectF(0,0,2*edge_size + width,2*edge_size+height).normalized(); }

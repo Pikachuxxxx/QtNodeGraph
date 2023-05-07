@@ -6,6 +6,7 @@
 #include <QGraphicsItem>
 
 #include "Node.h"
+#include "Socket.h"
 
 NodeGraphWidget::NodeGraphWidget(QWidget* parent)
     : QWidget(parent)
@@ -22,7 +23,7 @@ NodeGraphWidget::NodeGraphWidget(QWidget* parent)
     layout->addWidget(m_GraphicsView);
 
     // addDebugContent();
-    auto node = new Node(m_Scene, "Test_Node_0");
+    auto node = new Node(m_Scene, "Test_Node_0", 2);
 }
 
 NodeGraphWidget::~NodeGraphWidget()
