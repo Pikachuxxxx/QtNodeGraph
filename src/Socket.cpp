@@ -12,3 +12,9 @@ Socket::Socket(Node* node, uint32_t index, SocketPos position)
     grSocket = new GraphicsSocket(node->getGraphicsNode());
     grSocket->setPos(node->getSocketPosition(index, position));
 }
+
+QPointF Socket::getPos()
+{
+    // return grSocket->pos();
+    return node->getSocketPosition(index, position);
+}

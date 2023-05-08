@@ -1,8 +1,9 @@
 #include "NodeGraphicsScene.h"
 
+#include <QPainterPath>
+
 #include <vector>
 #include <cmath>
-
 #include <iostream>
 
 NodeGraphicsScene::NodeGraphicsScene()

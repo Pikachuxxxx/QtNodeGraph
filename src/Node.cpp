@@ -29,6 +29,11 @@ Node::~Node()
 
 }
 
+void Node::setPos(uint32_t x, uint32_t y)
+{
+    graphicsNode->setPos(x, y);
+}
+
 QPointF Node::getSocketPosition(uint32_t index, SocketPos pos)
 {
     float x = 0, y = 0;
