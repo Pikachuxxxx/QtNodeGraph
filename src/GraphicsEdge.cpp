@@ -15,6 +15,7 @@ GraphicsEdge::GraphicsEdge(NodeEdge* edge, QGraphicsItem* parent)
 {
     pathPen = QPen("#FFFFFF");
     pathPen.setWidth(2);
+    this->setZValue(-1);
 }
 
 void GraphicsEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
