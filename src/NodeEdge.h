@@ -4,10 +4,16 @@ class NodeScene;
 class Socket;
 class GraphicsEdge;
 
+enum EdgeType
+{
+    BEZIER,
+    DIRECT
+};
+
 class NodeEdge
 {
 public:
-    NodeEdge(NodeScene* scene, Socket* startSocket, Socket* endSocket);
+    NodeEdge(NodeScene* scene, Socket* startSocket, Socket* endSocket, EdgeType type = BEZIER);
     ~NodeEdge() {}
 
     void updatePositions();

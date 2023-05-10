@@ -19,7 +19,7 @@ enum SocketPos
 class Socket
 {
 public:
-    Socket(Node* node, uint32_t index = 0, SocketPos position = LEFT_TOP);
+    Socket(Node* node, uint32_t index = 0, SocketPos position = LEFT_TOP, std::string colorHex = "#FFFF7700");
     ~Socket() {}
 
     QPointF getPos();

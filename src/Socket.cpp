@@ -6,10 +6,10 @@
 
 #include<iostream>
 
-Socket::Socket(Node* node, uint32_t index, SocketPos position)
+Socket::Socket(Node* node, uint32_t index, SocketPos position, std::string colorHex )
     : node(node), index(index), position(position)
 {
-    grSocket = new GraphicsSocket(node->getGraphicsNode());
+    grSocket = new GraphicsSocket(colorHex, node->getGraphicsNode());
     grSocket->setPos(node->getSocketPosition(index, position));
 }
 

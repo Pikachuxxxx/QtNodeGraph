@@ -9,7 +9,7 @@
 class GraphicsSocket : public QGraphicsItem
 {
 public:
-    GraphicsSocket(QGraphicsItem* parent = nullptr);
+    GraphicsSocket(std::string colorHex = "#FFFF7700", QGraphicsItem* parent = nullptr);
     ~GraphicsSocket() {}
 
     QRectF boundingRect() const override { return QRectF(-radius - outlineWidth, -radius - outlineWidth, 2 * (radius + outlineWidth), 2 * (radius + outlineWidth)).normalized(); }

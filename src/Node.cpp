@@ -24,6 +24,26 @@ Node::Node(NodeScene* scene, std::string nodeName, uint32_t inputsCount, uint32_
     }
 }
 
+Node::Node(NodeScene* scene, std::string nodeName, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount)
+    : scene(scene), title(nodeName)
+{
+    nodeContent = new NodeContentWidget;
+    graphicsNode = new GraphicsNode(this);
+
+    scene->addNode(this);
+    scene->getGraphicsScene()->addItem(graphicsNode);
+
+    for (size_t i = 0; i < inputsCount.size(); i++) {
+        auto socket = new Socket(this, i, LEFT_BOTTOM, inputsCount[i]);
+        inputs.push_back(socket);
+    }
+
+    for (size_t i = 0; i < outputsCount.size(); i++) {
+        auto socket = new Socket(this, i, RIGHT_TOP, outputsCount[i]);
+        outputs.push_back(socket);
+    }
+}
+
 Node::~Node()
 {
 

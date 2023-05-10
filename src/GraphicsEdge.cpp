@@ -13,16 +13,46 @@
 GraphicsEdge::GraphicsEdge(NodeEdge* edge, QGraphicsItem* parent)
     :edge(edge)
 {
+    this->setFlags(QGraphicsItem::ItemIsSelectable);
     pathPen = QPen("#FFFFFF");
+    penSelected = QPen("#FFFFA637");
     pathPen.setWidth(2);
+    penSelected.setWidth(2);
+
     this->setZValue(-1);
+}
+
+QRectF GraphicsEdge::boundingRect() const
+{
+    return this->shape().boundingRect();
+}
+
+QPainterPath GraphicsEdge::shape() const
+{
+    QPainterPath path;
+    auto sourcePos = edge->getStartSocket()->getPos();
+    sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
+
+    auto destPos = edge->getEndSocket()->getPos();
+    destPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
+
+    auto dist = (destPos.x() - sourcePos.x()) * 0.5f;
+    if(sourcePos.x() > destPos.y()) dist *= -1;
+
+    path = QPainterPath(sourcePos);
+    path.cubicTo(sourcePos.x() + dist, sourcePos.y(), destPos.x() - dist, destPos.y(), destPos.x(), destPos.y());
+    return path;
 }
 
 void GraphicsEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     updatePath();
 
-    painter->setPen(pathPen);
+    // painter->setPen(pathPen);
+    if(!isSelected())
+        painter->setPen(pathPen);
+    else
+        painter->setPen(penSelected);
     painter->setBrush(Qt::NoBrush);
     painter->drawPath(path);
 }
@@ -52,6 +82,7 @@ GraphicsEdgeBezier::GraphicsEdgeBezier(NodeEdge* edge, QGraphicsItem* parent)
 {
 
 }
+
 void GraphicsEdgeBezier::updatePath()
 {
     auto sourcePos = edge->getStartSocket()->getPos();

@@ -14,7 +14,9 @@ class NodeContentWidget;
 class Node
 {
 public:
+    // TODO: Use a array for input and output counts that take the node colors/types in future
     Node(NodeScene* scene, std::string nodeName, uint32_t inputsCount = 0, uint32_t outputsCount = 0);
+    Node(NodeScene* scene, std::string nodeName, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount);
     ~Node();
 
     QPointF getSocketPosition(uint32_t index, SocketPos pos);

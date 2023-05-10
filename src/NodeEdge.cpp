@@ -4,10 +4,13 @@
 #include "Socket.h"
 #include "GraphicsEdge.h"
 
-NodeEdge::NodeEdge(NodeScene* scene, Socket* startSocket, Socket* endSocket)
+NodeEdge::NodeEdge(NodeScene* scene, Socket* startSocket, Socket* endSocket, EdgeType type)
     : m_Scene(scene), startSocket(startSocket), endSocket(endSocket)
 {
-    grEdge = new GraphicsEdgeBezier(this);
+    if(type == BEZIER)
+        grEdge = new GraphicsEdgeBezier(this);
+    else if(type == DIRECT)
+        grEdge = new GraphicsEdgeDirect(this);
 
     scene->getGraphicsScene()->addItem(grEdge);
 }

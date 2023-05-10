@@ -14,12 +14,14 @@ public:
 
     virtual void updatePath() = 0;
 
-    QRectF boundingRect() const override { return QRectF(0, 0, 10000, 10000); }
+    QRectF boundingRect() const override; //{ return QRectF(0, 0, 10000, 10000); }
+    QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
 protected:
     NodeEdge* edge;
     QPen pathPen;
+    QPen penSelected;
     QPainterPath path;
 };
 
