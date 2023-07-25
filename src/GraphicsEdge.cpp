@@ -16,8 +16,8 @@ GraphicsEdge::GraphicsEdge(NodeEdge* edge, QGraphicsItem* parent)
     this->setFlags(QGraphicsItem::ItemIsSelectable);
     pathPen = QPen("#FFFFFF");
     penSelected = QPen("#FFFFA637");
-    pathPen.setWidth(2);
-    penSelected.setWidth(2);
+    pathPen.setWidthF(2.5f);
+    penSelected.setWidthF(2.5f);
 
     this->setZValue(-1);
 }
@@ -48,7 +48,6 @@ void GraphicsEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 {
     updatePath();
 
-    // painter->setPen(pathPen);
     if(!isSelected())
         painter->setPen(pathPen);
     else

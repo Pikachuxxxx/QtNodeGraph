@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include <QGraphicsItem>
 #include <QColor>
 #include <QPen>
@@ -12,7 +14,12 @@ public:
     GraphicsSocket(std::string colorHex = "#FFFF7700", QGraphicsItem* parent = nullptr);
     ~GraphicsSocket() {}
 
-    QRectF boundingRect() const override { return QRectF(-radius - outlineWidth, -radius - outlineWidth, 2 * (radius + outlineWidth), 2 * (radius + outlineWidth)).normalized(); }
+    void mousePressEvent(QGraphicsSceneMouseEvent* event) override
+    {
+        std::cout << "Socket Pressed" << std::endl;
+    }
+
+    QRectF boundingRect() const override { return QRectF(0, 0, 2 * (radius + outlineWidth), 2 * (radius + outlineWidth)).normalized(); }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
 private:
@@ -22,5 +29,4 @@ private:
     QColor outlineColor;
     QPen pen;
     QBrush brush;
-
 };

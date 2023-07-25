@@ -15,7 +15,15 @@ public:
 
     void mousePressEvent(QMouseEvent* event) override
     {
-        if(event->button() == Qt::RightButton){
+        if(event->button() == Qt::LeftButton){
+
+            QGraphicsView::mousePressEvent(event);
+
+            auto item = itemAt(event->pos());
+            std::cout << item << std::endl;
+
+        }
+        else if(event->button() == Qt::RightButton){
             auto releaseEvent = new QMouseEvent(QMouseEvent::MouseButtonRelease, event->localPos(), event->screenPos(), Qt::LeftButton, Qt::NoButton, event->modifiers());
             QGraphicsView::mousePressEvent(releaseEvent);
             setDragMode(QGraphicsView::ScrollHandDrag);
@@ -29,7 +37,11 @@ public:
 
     void mouseReleaseEvent(QMouseEvent* event) override
     {
-        if(event->button() == Qt::RightButton){
+        if(event->button() == Qt::LeftButton){
+            QGraphicsView::mouseReleaseEvent(event);
+
+        }
+        else if(event->button() == Qt::RightButton){
             auto fakeEvent = new QMouseEvent(event->type(), event->localPos(), event->screenPos(), Qt::LeftButton, event->buttons() & ~Qt::LeftButton, event->modifiers());
             setDragMode(QGraphicsView::NoDrag);
             QGraphicsView::mouseReleaseEvent(fakeEvent);
