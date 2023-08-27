@@ -55,7 +55,6 @@ void NodeGraphWidget::addDebugContent()
 
     auto edge = new NodeEdge(m_Scene, node->getOutputSocket(0), node_2->getInputSocket(1), BEZIER);
     auto edge_2 = new NodeEdge(m_Scene, node_2->getOutputSocket(1), node_3->getInputSocket(0), DIRECT);
-
 }
 
 QPoint NodeGraphWidget::getOrigin()

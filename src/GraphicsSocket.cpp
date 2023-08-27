@@ -4,7 +4,7 @@ GraphicsSocket::GraphicsSocket(std::string colorHex, QGraphicsItem* parent)
     : QGraphicsItem(parent)
 {
     // this->setPos(node->getScene()->getOrigin().x(), node->getScene()->getOrigin().y());
-    this->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
+    this->setFlags(QGraphicsItem::ItemIsSelectable);
     bgColor = QColor(colorHex.c_str());
     outlineColor = QColor("#FF000000");
 

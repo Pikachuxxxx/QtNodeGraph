@@ -32,7 +32,7 @@ GraphicsNode::GraphicsNode(Node* node)
 
 void GraphicsNode::initSockets()
 {
-    
+
 }
 
 void GraphicsNode::initContent()

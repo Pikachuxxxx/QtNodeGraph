@@ -29,7 +29,7 @@ private:
     QGraphicsTextItem* titleItem;
     uint32_t width = 180;
     uint32_t height = 240;
-    uint32_t edge_size = 10;
+    uint32_t edge_size = 8;
     uint32_t titleHeight = 24;
     uint32_t padding = 5;
     QPen penDefault;
