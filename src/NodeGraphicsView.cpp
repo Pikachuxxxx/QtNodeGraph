@@ -1,9 +1,11 @@
 #include "NodeGraphicsView.h"
 
-NodeGraphicsView::NodeGraphicsView(NodeGraphicsScene* scene, QWidget* parent)
-    :QGraphicsView(parent)
+#include "NodeScene.h"
+
+NodeGraphicsView::NodeGraphicsView(NodeScene* scene, QWidget* parent)
+    :QGraphicsView(parent), m_Scene(scene)
 {
-    setScene(scene);
+    setScene(scene->getGraphicsScene());
 
     setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);

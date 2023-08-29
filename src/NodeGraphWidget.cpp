@@ -20,7 +20,7 @@ NodeGraphWidget::NodeGraphWidget(QWidget* parent)
 
     m_Scene = new NodeScene;
 
-    m_GraphicsView = new NodeGraphicsView(m_Scene->getGraphicsScene());
+    m_GraphicsView = new NodeGraphicsView(m_Scene);
     layout->addWidget(m_GraphicsView);
 
     addDebugContent();

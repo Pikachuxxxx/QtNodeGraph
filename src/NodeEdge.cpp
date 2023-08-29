@@ -12,6 +12,7 @@ NodeEdge::NodeEdge(NodeScene* scene, Socket* startSocket, Socket* endSocket, Edg
     else if(type == DIRECT)
         grEdge = new GraphicsEdgeDirect(this);
 
+    scene->addEdge(this);
     scene->getGraphicsScene()->addItem(grEdge);
 }
 

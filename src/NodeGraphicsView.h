@@ -6,8 +6,9 @@
 #include <QGraphicsView>
 #include <QMouseEvent>
 
-#include "NodeGraphicsScene.h"
 #include "GraphicsSocket.h"
+
+class NodeScene;
 
 enum class DRAG_MODE
 {
@@ -15,10 +16,12 @@ enum class DRAG_MODE
     EDGE
 };
 
+constexpr uint32_t EDGE_DRAG_THRESHOLD = 10; // pixels
+
 class NodeGraphicsView : public QGraphicsView
 {
 public:
-    NodeGraphicsView(NodeGraphicsScene* scene, QWidget* parent = nullptr);
+    NodeGraphicsView(NodeScene* scene, QWidget* parent = nullptr);
     ~NodeGraphicsView() {}
 
     // TODO: Implement functions for L/M/R press/release
@@ -35,22 +38,12 @@ public:
             {
                 std::cout << "[Node Graphics View] Socket was clicked!" << std::endl;
                 if(m_Mode == DRAG_MODE::NO_OP){
-                    m_Mode = DRAG_MODE::EDGE;
-                    std::cout << "Start dragging edge" << std::endl;
-                    std::cout << "\t assign start socket" << std::endl;
+                    edgeDragStart(item);
                     return;
                 }
             }
-            // TODO: Move this to moveReleaseEvent
             if(m_Mode == DRAG_MODE::EDGE){
-                m_Mode = DRAG_MODE::NO_OP;
-                std::cout << "End dragging edge" << std::endl;
-
-                if(dynamic_cast<GraphicsSocket*>(item))
-                {
-                    std::cout << "\t assign end socket" << std::endl;
-                    return;
-                }
+                if (edgeDragEnd(item)) return;
             }
             QGraphicsView::mousePressEvent(event);
         }
@@ -70,25 +63,15 @@ public:
     void mouseReleaseEvent(QMouseEvent* event) override
     {
         if(event->button() == Qt::LeftButton){
-
             auto item = itemAt(event->pos());
+            // Works for a continious drag of mouse and released on the socket (2nd type of drawing edges from socket)
+            // press on socket this won't work cause dist is very less when released, if we make a long drag dist is more and this alternate form will work,
+            // in this case socket press won't work as well as release will cause edgeDragEnd
             if(m_Mode == DRAG_MODE::EDGE) {
-
                 auto m_newLMBReleaseScenePos = mapToScene(event->pos());
-                auto dis = m_newLMBReleaseScenePos - m_lastLMBClickScenePos;
-                if(m_lastLMBClickScenePos) {
-
-                }
-                else {
-                    m_Mode = DRAG_MODE::NO_OP;
-
-                    std::cout << "End dragging edge" << std::endl;
-
-                    if(dynamic_cast<GraphicsSocket*>(item))
-                    {
-                        std::cout << "\t assign end socket" << std::endl;
-                        return;
-                    }
+                auto dist = m_newLMBReleaseScenePos - m_lastLMBClickScenePos;
+                if( dist.x() * dist.x() + dist.y() * dist.y() >  EDGE_DRAG_THRESHOLD * EDGE_DRAG_THRESHOLD) {
+                    if (edgeDragEnd(item)) return;
                 }
             }
 
@@ -140,8 +123,24 @@ public:
     void rightMouseRelease(QMouseEvent* event);
     void middleMouseRelease(QMouseEvent* event);
 
-    void edgeDragStart();
-    void edgeDragEnd();
+    void edgeDragStart(QGraphicsItem* item)
+    {
+        m_Mode = DRAG_MODE::EDGE;
+        std::cout << "Start dragging edge" << std::endl;
+        std::cout << "\t assign start socket" << std::endl;
+    }
+    bool edgeDragEnd(QGraphicsItem* item)
+    {
+        m_Mode = DRAG_MODE::NO_OP;
+        std::cout << "End dragging edge" << std::endl;
+
+        if(dynamic_cast<GraphicsSocket*>(item))
+        {
+            std::cout << "\t assign end socket" << std::endl;
+            return true;
+        }
+        else return false;
+    }
 
 private:
     float zoomInFactor = 1.25f;
@@ -152,4 +151,5 @@ private:
     float zoomFactor = 1.0f;
     DRAG_MODE m_Mode = DRAG_MODE::NO_OP;
     QPointF m_lastLMBClickScenePos;
+    NodeScene* m_Scene;
 };
