@@ -21,6 +21,9 @@ public:
     NodeGraphicsView(NodeGraphicsScene* scene, QWidget* parent = nullptr);
     ~NodeGraphicsView() {}
 
+    // TODO: Implement functions for L/M/R press/release
+    // TODO: Implement functions for edgeDragStart/End
+
     void mousePressEvent(QMouseEvent* event) override
     {
         if(event->button() == Qt::LeftButton){
@@ -128,6 +131,17 @@ public:
         if(!clamped)
             scale(zoomFactor, zoomFactor);
     }
+
+    void leftMousePress(QMouseEvent* event);
+    void rightMousePress(QMouseEvent* event);
+    void middleMousePress(QMouseEvent* event);
+
+    void leftMouseRelease(QMouseEvent* event);
+    void rightMouseRelease(QMouseEvent* event);
+    void middleMouseRelease(QMouseEvent* event);
+
+    void edgeDragStart();
+    void edgeDragEnd();
 
 private:
     float zoomInFactor = 1.25f;
