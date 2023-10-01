@@ -168,6 +168,7 @@ public:
     {
         m_Mode = DRAG_MODE::NO_OP;
         std::cout << "End dragging edge" << std::endl;
+
         if(dynamic_cast<GraphicsSocket*>(item))
         {
             std::cout << "\t assign end socket" << std::endl;

@@ -4,6 +4,8 @@
 #include "Socket.h"
 #include "GraphicsEdge.h"
 
+#include <iostream>
+
 NodeEdge::NodeEdge(NodeScene* scene, Socket* startSocket, Socket* endSocket, EdgeType type)
     : m_Scene(scene), startSocket(startSocket), endSocket(endSocket)
 {
@@ -38,7 +40,7 @@ void NodeEdge::removeFromSockets()
 void NodeEdge::remove()
 {
     removeFromSockets();
-    m_Scene->getGraphicsScene()->removeItem(grEdge);
+    // m_Scene->getGraphicsScene()->removeItem(grEdge);
     delete grEdge;
     grEdge = nullptr;
 }
