@@ -98,9 +98,14 @@ int main(int argc, char* argv[])
 
     // Add a rctange to the scene at the center
     QLinearGradient linearGrad(QPointF(0, 0), QPointF(0, 50));
-    linearGrad.setColorAt(0, QColor("#c9de96"));
-    linearGrad.setColorAt(0.44, QColor("#8ab66b"));
-    linearGrad.setColorAt(0.8, QColor("#398235"));
+    // Green Gradient
+    // linearGrad.setColorAt(0, QColor("#c9de96"));
+    // linearGrad.setColorAt(0.44, QColor("#8ab66b"));
+    // linearGrad.setColorAt(0.8, QColor("#398235"));
+    // Orange Gradient
+    linearGrad.setColorAt(0.2, QColor("#C79712"));
+    linearGrad.setColorAt(0.98, QColor("#D14707"));
+    // XXXXX linearGrad.setColorAt(0.44, QColor("#FF6200"));
 
     scene->addRect(0, 0, 250, 50, QPen(QColor("#121212")), QBrush(linearGrad));
     auto txt = scene->addText("Capacity : 48 Mib");

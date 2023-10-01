@@ -1,7 +1,11 @@
 #include "GraphicsSocket.h"
 
-GraphicsSocket::GraphicsSocket(std::string colorHex, QGraphicsItem* parent)
-    : QGraphicsItem(parent)
+#include "Socket.h"
+#include "Node.h"
+#include "GraphicsNode.h"
+
+GraphicsSocket::GraphicsSocket(Socket* socket, std::string colorHex)
+    : QGraphicsItem(socket->getNode()->getGraphicsNode()), m_Socket(socket)
 {
     // this->setPos(node->getScene()->getOrigin().x(), node->getScene()->getOrigin().y());
     this->setFlags(QGraphicsItem::ItemIsSelectable);

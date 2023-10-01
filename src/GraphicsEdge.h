@@ -21,6 +21,7 @@ public:
 protected:
     NodeEdge* edge;
     QPen pathPen;
+    QPen pathDragPen;
     QPen penSelected;
     QPainterPath path;
 };

@@ -9,7 +9,7 @@
 Socket::Socket(Node* node, uint32_t index, SocketPos position, std::string colorHex )
     : node(node), index(index), position(position)
 {
-    grSocket = new GraphicsSocket(colorHex, node->getGraphicsNode());
+    grSocket = new GraphicsSocket(this, colorHex);
     grSocket->setPos(node->getSocketPosition(index, position));
 }
 

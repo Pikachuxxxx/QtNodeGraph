@@ -26,6 +26,8 @@ public:
     void removeFromSockets();
     void remove();
 
+    inline GraphicsEdge* getGraphicsEdge() { return grEdge; }
+    inline NodeScene* getScene() { return m_Scene; }
 private:
     NodeScene* m_Scene;
     GraphicsEdge* grEdge;

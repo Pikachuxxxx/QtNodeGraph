@@ -15,9 +15,12 @@ GraphicsEdge::GraphicsEdge(NodeEdge* edge, QGraphicsItem* parent)
 {
     this->setFlags(QGraphicsItem::ItemIsSelectable);
     pathPen = QPen("#FFFFFF");
+    pathDragPen = QPen("#000000");
+    pathDragPen.setStyle(Qt::DashLine);
     penSelected = QPen("#FFFFA637");
     pathPen.setWidthF(2.5f);
     penSelected.setWidthF(2.5f);
+    pathDragPen.setWidthF(2.5f);
 
     this->setZValue(-1);
 }
@@ -33,8 +36,11 @@ QPainterPath GraphicsEdge::shape() const
     auto sourcePos = edge->getStartSocket()->getPos();
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
 
-    auto destPos = edge->getEndSocket()->getPos();
-    destPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
+    QPointF destPos = edge->getScene()->getOrigin();
+    if(edge->getEndSocket()) {
+        destPos = edge->getEndSocket()->getPos();
+        destPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
+    }
 
     auto dist = (destPos.x() - sourcePos.x()) * 0.5f;
     if(sourcePos.x() > destPos.y()) dist *= -1;
@@ -48,10 +54,14 @@ void GraphicsEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 {
     updatePath();
 
-    if(!isSelected())
-        painter->setPen(pathPen);
+    if(edge->getEndSocket()) {
+        if(!isSelected())
+            painter->setPen(pathPen);
+        else
+            painter->setPen(penSelected);
+    }
     else
-        painter->setPen(penSelected);
+        painter->setPen(pathDragPen);
     painter->setBrush(Qt::NoBrush);
     painter->drawPath(path);
 }
@@ -68,8 +78,11 @@ void GraphicsEdgeDirect::updatePath()
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
     // sourcePos += QPointF(3, 3);
 
-    auto destPos = edge->getEndSocket()->getPos();
-    destPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
+    QPointF destPos = edge->getScene()->getOrigin();
+    if(edge->getEndSocket()) {
+        destPos = edge->getEndSocket()->getPos();
+        destPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
+    }
     // destPos -= QPointF(3, 3);
 
     path = QPainterPath(sourcePos);
@@ -87,8 +100,11 @@ void GraphicsEdgeBezier::updatePath()
     auto sourcePos = edge->getStartSocket()->getPos();
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
 
-    auto destPos = edge->getEndSocket()->getPos();
-    destPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
+    QPointF destPos = edge->getScene()->getOrigin();
+    if(edge->getEndSocket()) {
+        destPos = edge->getEndSocket()->getPos();
+        destPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
+    }
 
     auto dist = (destPos.x() - sourcePos.x()) * 0.5f;
     if(sourcePos.x() > destPos.y()) dist *= -1;

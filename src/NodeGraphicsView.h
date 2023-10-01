@@ -7,8 +7,10 @@
 #include <QMouseEvent>
 
 #include "GraphicsSocket.h"
+#include "NodeEdge.h"
 
 class NodeScene;
+class Socket;
 
 enum class DRAG_MODE
 {
@@ -39,6 +41,8 @@ public:
                 std::cout << "[Node Graphics View] Socket was clicked!" << std::endl;
                 if(m_Mode == DRAG_MODE::NO_OP){
                     edgeDragStart(item);
+                    // Draw an edge here
+                    m_DragEdge = new NodeEdge(m_Scene, static_cast<GraphicsSocket*>(item)->getSocket(), nullptr);
                     return;
                 }
             }
@@ -76,8 +80,6 @@ public:
             }
 
             QGraphicsView::mouseReleaseEvent(event);
-
-            // TODO: Reset mode to NO_OP as soon as the mouse is relesed, socket connection works like drag drop
         }
         else if(event->button() == Qt::RightButton){
             // Panning the canvas using RMB
@@ -115,13 +117,31 @@ public:
             scale(zoomFactor, zoomFactor);
     }
 
-    void leftMousePress(QMouseEvent* event);
-    void rightMousePress(QMouseEvent* event);
-    void middleMousePress(QMouseEvent* event);
+    void leftMousePress(QMouseEvent* event)
+    {
 
-    void leftMouseRelease(QMouseEvent* event);
-    void rightMouseRelease(QMouseEvent* event);
-    void middleMouseRelease(QMouseEvent* event);
+    }
+    void rightMousePress(QMouseEvent* event)
+    {
+
+    }
+    void middleMousePress(QMouseEvent* event)
+    {
+
+    }
+
+    void leftMouseRelease(QMouseEvent* event)
+    {
+
+    }
+    void rightMouseRelease(QMouseEvent* event)
+    {
+
+    }
+    void middleMouseRelease(QMouseEvent* event)
+    {
+
+    }
 
     void edgeDragStart(QGraphicsItem* item)
     {
@@ -152,4 +172,6 @@ private:
     DRAG_MODE m_Mode = DRAG_MODE::NO_OP;
     QPointF m_lastLMBClickScenePos;
     NodeScene* m_Scene;
+    //------------------------------
+    NodeEdge* m_DragEdge = nullptr;
 };
