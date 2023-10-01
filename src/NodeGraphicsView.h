@@ -7,7 +7,9 @@
 #include <QMouseEvent>
 
 #include "GraphicsSocket.h"
+#include "Socket.h"
 #include "NodeEdge.h"
+#include "GraphicsEdge.h"
 
 class NodeScene;
 class Socket;
@@ -47,7 +49,8 @@ public:
                 }
             }
             if(m_Mode == DRAG_MODE::EDGE){
-                if (edgeDragEnd(item)) return;
+                if (edgeDragEnd(item))
+                    return;
             }
             QGraphicsView::mousePressEvent(event);
         }
@@ -89,6 +92,18 @@ public:
         }
         else
             QGraphicsView::mouseReleaseEvent(event);
+    }
+
+    void mouseMoveEvent(QMouseEvent* event) override
+    {
+        if(m_Mode == DRAG_MODE::EDGE) {
+            auto pos = mapToScene(event->pos());
+            m_DragEdge->getGraphicsEdge()->setDestPos(pos);
+            // Manualllry trigger repaint
+            m_DragEdge->getGraphicsEdge()->update();
+        }
+
+        QGraphicsView::mouseMoveEvent(event);
     }
 
     void wheelEvent(QWheelEvent* event) override
@@ -153,13 +168,22 @@ public:
     {
         m_Mode = DRAG_MODE::NO_OP;
         std::cout << "End dragging edge" << std::endl;
-
         if(dynamic_cast<GraphicsSocket*>(item))
         {
             std::cout << "\t assign end socket" << std::endl;
+            m_DragEdge->setEndSocket(dynamic_cast<GraphicsSocket*>(item)->getSocket());
+            m_DragEdge->getStartSocket()->setConnectedEdge(m_DragEdge);
+            m_DragEdge->getEndSocket()->setConnectedEdge(m_DragEdge);
+            m_DragEdge->getGraphicsEdge()->update();
             return true;
         }
-        else return false;
+
+        // If it's not a socket end the m_DragEdge
+        m_DragEdge->remove();
+        delete m_DragEdge;
+        m_DragEdge = nullptr;
+
+        return false;
     }
 
 private:

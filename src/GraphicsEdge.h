@@ -18,12 +18,15 @@ public:
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
+    void setDestPos(QPointF pos) { destPos = pos; updatePath(); }
 protected:
     NodeEdge* edge;
     QPen pathPen;
     QPen pathDragPen;
     QPen penSelected;
     QPainterPath path;
+    QPointF destPos;
+
 };
 
 //------------------------------------------------------------------------------

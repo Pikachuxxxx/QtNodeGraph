@@ -20,9 +20,13 @@ GraphicsEdge::GraphicsEdge(NodeEdge* edge, QGraphicsItem* parent)
     penSelected = QPen("#FFFFA637");
     pathPen.setWidthF(2.5f);
     penSelected.setWidthF(2.5f);
-    pathDragPen.setWidthF(2.5f);
+    pathDragPen.setWidthF(2.0f);
 
     this->setZValue(-1);
+
+    auto sourcePos = edge->getStartSocket()->getPos();
+    sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
+    destPos = sourcePos;
 }
 
 QRectF GraphicsEdge::boundingRect() const
@@ -36,17 +40,19 @@ QPainterPath GraphicsEdge::shape() const
     auto sourcePos = edge->getStartSocket()->getPos();
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
 
-    QPointF destPos = edge->getScene()->getOrigin();
+    QPointF destinationPos;
     if(edge->getEndSocket()) {
-        destPos = edge->getEndSocket()->getPos();
-        destPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
+        destinationPos = edge->getEndSocket()->getPos();
+        destinationPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
     }
+    else
+        destinationPos = destPos;
 
-    auto dist = (destPos.x() - sourcePos.x()) * 0.5f;
-    if(sourcePos.x() > destPos.y()) dist *= -1;
+    auto dist = (destinationPos.x() - sourcePos.x()) * 0.5f;
+    if(sourcePos.x() > destinationPos.y()) dist *= -1;
 
     path = QPainterPath(sourcePos);
-    path.cubicTo(sourcePos.x() + dist, sourcePos.y(), destPos.x() - dist, destPos.y(), destPos.x(), destPos.y());
+    path.cubicTo(sourcePos.x() + dist, sourcePos.y(), destinationPos.x() - dist, destinationPos.y(), destinationPos.x(), destinationPos.y());
     return path;
 }
 
@@ -76,17 +82,17 @@ void GraphicsEdgeDirect::updatePath()
 {
     auto sourcePos = edge->getStartSocket()->getPos();
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
-    // sourcePos += QPointF(3, 3);
 
-    QPointF destPos = edge->getScene()->getOrigin();
+    QPointF destinationPos;
     if(edge->getEndSocket()) {
-        destPos = edge->getEndSocket()->getPos();
-        destPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
+        destinationPos = edge->getEndSocket()->getPos();
+        destinationPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
     }
-    // destPos -= QPointF(3, 3);
+    else
+        destinationPos = destPos;
 
     path = QPainterPath(sourcePos);
-    path.lineTo(destPos);
+    path.lineTo(destinationPos);
 }
 //------------------------------------------------------------------------------
 GraphicsEdgeBezier::GraphicsEdgeBezier(NodeEdge* edge, QGraphicsItem* parent)
@@ -100,16 +106,18 @@ void GraphicsEdgeBezier::updatePath()
     auto sourcePos = edge->getStartSocket()->getPos();
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
 
-    QPointF destPos = edge->getScene()->getOrigin();
+    QPointF destinationPos;
     if(edge->getEndSocket()) {
-        destPos = edge->getEndSocket()->getPos();
-        destPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
+        destinationPos = edge->getEndSocket()->getPos();
+        destinationPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
     }
+    else
+        destinationPos = destPos;
 
-    auto dist = (destPos.x() - sourcePos.x()) * 0.5f;
-    if(sourcePos.x() > destPos.y()) dist *= -1;
+    auto dist = (destinationPos.x() - sourcePos.x()) * 0.5f;
+    if(sourcePos.x() > destinationPos.y()) dist *= -1;
 
     path = QPainterPath(sourcePos);
-    path.cubicTo(sourcePos.x() + dist, sourcePos.y(), destPos.x() - dist, destPos.y(), destPos.x(), destPos.y());
+    path.cubicTo(sourcePos.x() + dist, sourcePos.y(), destinationPos.x() - dist, destinationPos.y(), destinationPos.x(), destinationPos.y());
 }
 //------------------------------------------------------------------------------
