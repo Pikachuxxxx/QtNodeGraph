@@ -9,6 +9,9 @@
 #include <QPainterPath>
 
 #include <iostream>
+#include <algorithm>
+
+constexpr uint32_t kEdgeControlPointCurvature = 100;
 
 GraphicsEdge::GraphicsEdge(NodeEdge* edge, QGraphicsItem* parent)
     :edge(edge)
@@ -41,7 +44,7 @@ QPainterPath GraphicsEdge::shape() const
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
 
     QPointF destinationPos;
-    if(edge->getEndSocket()) {
+    if (edge->getEndSocket()) {
         destinationPos = edge->getEndSocket()->getPos();
         destinationPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
     }
@@ -49,19 +52,19 @@ QPainterPath GraphicsEdge::shape() const
         destinationPos = destPos;
 
     auto dist = (destinationPos.x() - sourcePos.x()) * 0.5f;
-    if(sourcePos.x() > destinationPos.y()) dist *= -1;
+    if (sourcePos.x() > destinationPos.y()) dist *= -1;
 
     path = QPainterPath(sourcePos);
     path.cubicTo(sourcePos.x() + dist, sourcePos.y(), destinationPos.x() - dist, destinationPos.y(), destinationPos.x(), destinationPos.y());
     return path;
 }
 
-void GraphicsEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void GraphicsEdge::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
     updatePath();
 
-    if(edge->getEndSocket()) {
-        if(!isSelected())
+    if (edge->getEndSocket()) {
+        if (!isSelected())
             painter->setPen(pathPen);
         else
             painter->setPen(penSelected);
@@ -84,7 +87,7 @@ void GraphicsEdgeDirect::updatePath()
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
 
     QPointF destinationPos;
-    if(edge->getEndSocket()) {
+    if (edge->getEndSocket()) {
         destinationPos = edge->getEndSocket()->getPos();
         destinationPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
     }
@@ -107,7 +110,7 @@ void GraphicsEdgeBezier::updatePath()
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
 
     QPointF destinationPos;
-    if(edge->getEndSocket()) {
+    if (edge->getEndSocket()) {
         destinationPos = edge->getEndSocket()->getPos();
         destinationPos += edge->getEndSocket()->getNode()->getGraphicsNode()->pos();
     }
@@ -115,9 +118,27 @@ void GraphicsEdgeBezier::updatePath()
         destinationPos = destPos;
 
     auto dist = (destinationPos.x() - sourcePos.x()) * 0.5f;
-    if(sourcePos.x() > destinationPos.y()) dist *= -1;
+
+    //if(sourcePos.x() > destinationPos.y()) dist *= -1;
+
+    // Improved curve 
+    auto cpx_s = +dist;
+    auto cpx_d = -dist;
+    auto cpy_s = 0;
+    auto cpy_d = 0;
+
+    auto sspos = edge->getStartSocket()->getSocketPos();
+
+    if ((sourcePos.x() > destinationPos.x() && (sspos == RIGHT_TOP || sspos == RIGHT_BOTTOM)) || (sourcePos.x() < destinationPos.x() && (sspos == LEFT_BOTTOM || sspos == LEFT_TOP))) {
+        cpx_d *= -1;
+        cpx_s *= -1;
+    }
+
+    cpy_d = (sourcePos.y() - destinationPos.y()) / std::max(abs(sourcePos.y() - destinationPos.y()), 0.001) * kEdgeControlPointCurvature;
+    cpy_s = (destinationPos.y() - sourcePos.y()) / std::max(abs(destinationPos.y() - sourcePos.y()), 0.001) * kEdgeControlPointCurvature;
+
 
     path = QPainterPath(sourcePos);
-    path.cubicTo(sourcePos.x() + dist, sourcePos.y(), destinationPos.x() - dist, destinationPos.y(), destinationPos.x(), destinationPos.y());
+    path.cubicTo(sourcePos.x() + cpx_s, sourcePos.y() + cpy_s, destinationPos.x() + cpx_d, destinationPos.y() + cpy_d, destinationPos.x(), destinationPos.y());
 }
 //------------------------------------------------------------------------------

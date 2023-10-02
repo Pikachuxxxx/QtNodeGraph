@@ -24,10 +24,11 @@ public:
     ~Socket() {}
 
     QPointF getPos();
-    NodeEdge* getEdge() { return edge; }
-    void setConnectedEdge(NodeEdge* edge) { this->edge = edge; }
-    NodeEdge* getConnectedEdge() { return edge; }
-    Node* getNode() { return node; }
+    inline SocketPos getSocketPos() { return position; }
+    inline NodeEdge* getEdge() { return edge; }
+    inline void setConnectedEdge(NodeEdge* edge) { this->edge = edge; }
+    inline NodeEdge* getConnectedEdge() { return edge; }
+    inline Node* getNode() { return node; }
 private:
     Node* node;
     NodeEdge* edge; // Denotes the edge to which this socket is connected

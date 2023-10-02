@@ -19,7 +19,7 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override
     {
         std::cout << "Socket Pressed" << std::endl;
-
+         
         QGraphicsItem::mousePressEvent(event);
     }
 
