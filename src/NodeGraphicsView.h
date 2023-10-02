@@ -71,7 +71,7 @@ public:
     {
         if(event->button() == Qt::LeftButton){
             auto item = itemAt(event->pos());
-            // Works for a continious drag of mouse and released on the socket (2nd type of drawing edges from socket)
+            // Works for a continuous drag of mouse and released on the socket (2nd type of drawing edges from socket)
             // press on socket this won't work cause dist is very less when released, if we make a long drag dist is more and this alternate form will work,
             // in this case socket press won't work as well as release will cause edgeDragEnd
             if(m_Mode == DRAG_MODE::EDGE) {

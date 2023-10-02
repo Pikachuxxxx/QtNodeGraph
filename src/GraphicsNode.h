@@ -15,8 +15,8 @@ public:
     void initSockets();
     void initContent();
 
-    QRectF boundingRect() const override { return QRectF(0,0,width,height).normalized(); }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+    QRectF boundingRect() const override { return QRectF(0, 0, width, height).normalized(); }
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 
     uint32_t getWidth() const { return width; }
     uint32_t getHeight() const { return height; }

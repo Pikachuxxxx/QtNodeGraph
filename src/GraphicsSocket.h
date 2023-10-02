@@ -13,17 +13,25 @@ class Socket;
 class GraphicsSocket : public QGraphicsItem
 {
 public:
-    // TODO: Pass the Scoket to it instead of just GrpahicsNode because this way we can both use graphcis node to parent and socket can be used to draw dummy edges in grapihcs view as it can retrieve only graphics socket
     GraphicsSocket(Socket* socket, std::string colorHex = "#FFFF7700");
     ~GraphicsSocket() {}
 
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override
     {
         std::cout << "Socket Pressed" << std::endl;
+
+        QGraphicsItem::mousePressEvent(event);
     }
 
-    QRectF boundingRect() const override { return QRectF(0, 0, 2 * (radius + outlineWidth), 2 * (radius + outlineWidth)).normalized(); }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override
+    {
+        std::cout << "Mouse hovering on Socket" << std::endl;
+
+        QGraphicsItem::mouseMoveEvent(event);
+    }
+
+    QRectF boundingRect() const override { return QRectF(-(radius + outlineWidth), -(radius + outlineWidth), 2 * (radius + outlineWidth), 2 * (radius + outlineWidth)); }
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 
     Socket* getSocket() { return m_Socket; }
 
