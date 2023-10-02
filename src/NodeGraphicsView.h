@@ -28,6 +28,21 @@ public:
     NodeGraphicsView(NodeScene* scene, QWidget* parent = nullptr);
     ~NodeGraphicsView() {}
 
+    void keyPressEvent(QKeyEvent* e) override
+    {
+        if (e->key() == Qt::Key_Escape) {
+            if (m_Mode == DRAG_MODE::EDGE) {
+                m_Mode = DRAG_MODE::NO_OP;
+                std::cout << "End dragging edge" << std::endl;
+
+                // If it's not a socket end the m_DragEdge
+                m_DragEdge->remove();
+                delete m_DragEdge;
+                m_DragEdge = nullptr;
+            }
+        }
+    }
+
     // TODO: Implement functions for L/M/R press/release
     // TODO: Implement functions for edgeDragStart/End
 
@@ -44,6 +59,7 @@ public:
                 if (m_Mode == DRAG_MODE::NO_OP) {
                     edgeDragStart(item);
                     // Draw an edge here
+                    m_LastStartSocket = static_cast<GraphicsSocket*>(item)->getSocket();
                     m_DragEdge = new NodeEdge(m_Scene, static_cast<GraphicsSocket*>(item)->getSocket(), nullptr);
                     return;
                 }
@@ -99,7 +115,7 @@ public:
         if (m_Mode == DRAG_MODE::EDGE) {
             auto pos = mapToScene(event->pos());
             m_DragEdge->getGraphicsEdge()->setDestPos(pos);
-            // Manualllry trigger repaint
+            // Manually trigger repaint
             m_DragEdge->getGraphicsEdge()->update();
         }
 
@@ -175,12 +191,15 @@ public:
 
         if (dynamic_cast<GraphicsSocket*>(item))
         {
-            std::cout << "\t assign end socket" << std::endl;
-            m_DragEdge->setEndSocket(dynamic_cast<GraphicsSocket*>(item)->getSocket());
-            m_DragEdge->getStartSocket()->setConnectedEdge(m_DragEdge);
-            m_DragEdge->getEndSocket()->setConnectedEdge(m_DragEdge);
-            m_DragEdge->getGraphicsEdge()->update();
-            return true;
+            if (dynamic_cast<GraphicsSocket*>(item)->getSocket() != m_LastStartSocket) {
+
+                std::cout << "\t assign end socket" << std::endl;
+                m_DragEdge->setEndSocket(dynamic_cast<GraphicsSocket*>(item)->getSocket());
+                m_DragEdge->getStartSocket()->setConnectedEdge(m_DragEdge);
+                m_DragEdge->getEndSocket()->setConnectedEdge(m_DragEdge);
+                m_DragEdge->getGraphicsEdge()->update();
+                return true;
+            }
         }
 
         // If it's not a socket end the m_DragEdge
@@ -203,4 +222,5 @@ private:
     NodeScene* m_Scene;
     //------------------------------
     NodeEdge* m_DragEdge = nullptr;
+    Socket* m_LastStartSocket = nullptr;
 };
