@@ -48,6 +48,8 @@ public:
 
     void mousePressEvent(QMouseEvent* event) override
     {
+        setDragMode(QGraphicsView::RubberBandDrag);
+
         if (event->button() == Qt::LeftButton) {
             auto item = itemAt(event->pos());
 
