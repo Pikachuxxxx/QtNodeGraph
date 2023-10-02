@@ -11,19 +11,28 @@ GraphicsNode::GraphicsNode(Node* node)
 {
     this->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
     this->setPos(node->getScene()->getOrigin().x(), node->getScene()->getOrigin().y());
+
     titleItem = new QGraphicsTextItem(this);
+    QFont f;
+    f.setPointSize(12);
+    f.setBold(true);
+    titleItem->setFont(f);
     titleItem->setPlainText(node->getTitle().c_str());
     titleItem->setDefaultTextColor(Qt::white);
     titleItem->setTextWidth(width - 2 * padding);
     titleItem->setPos(padding, 0);
 
-    penDefault = QPen(QColor("#7f000000")); // ARGB
-    penDefault.setWidth(2);
+    penDefault = QPen(QColor("#7f000000")); // ARGB E5FA96
+    // florescent green - RGB
+    //penDefault = QPen(QColor("#FFE5FA96"));
+    penDefault.setWidth(4);
     penSelected = QPen(QColor("#FFFFA637"));
-    penSelected.setWidth(2);
+    penSelected.setWidth(4);
 
     titleBrush = QBrush(QColor("#FF313131"));
+    //titleBrush = QBrush(QColor("#FFB9F027"));
     bgBrush = QBrush(QColor("#E3212121"));
+    //bgBrush = QBrush(QColor("#FF84AD18"));
 
     initSockets();
 
@@ -39,10 +48,10 @@ void GraphicsNode::initContent()
 {
     auto grContent = new QGraphicsProxyWidget(this);
     node->getContent()->setGeometry(QRect(edge_size, titleHeight + edge_size, width - 2 * edge_size, height - 2 * edge_size - titleHeight));
-    grContent->setWidget(node->getContent());
+    //grContent->setWidget(node->getContent());
 }
 
-void GraphicsNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void GraphicsNode::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
     // Title
     auto path_title = QPainterPath();
@@ -67,7 +76,7 @@ void GraphicsNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     // Outline
     auto path_outline = QPainterPath();
     path_outline.addRoundedRect(0, 0, width, height, edge_size, edge_size);
-    if(!isSelected())
+    if (!isSelected())
         painter->setPen(penDefault);
     else
         painter->setPen(penSelected);

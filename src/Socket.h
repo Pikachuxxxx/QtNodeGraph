@@ -17,10 +17,16 @@ enum SocketPos
     RIGHT_BOTTOM,
 };
 
+enum SocketType
+{
+    INPUT,
+    OUTPUT
+};
+
 class Socket
 {
 public:
-    Socket(Node* node, uint32_t index = 0, SocketPos position = LEFT_TOP, std::string colorHex = "#FFFF7700");
+    Socket(Node* node, uint32_t index = 0, SocketPos position = LEFT_TOP, std::string colorHex = "#FFFF7700", const std::string& name = "socket_name");
     ~Socket() {}
 
     QPointF getPos();
@@ -29,10 +35,14 @@ public:
     inline void setConnectedEdge(NodeEdge* edge) { this->edge = edge; }
     inline NodeEdge* getConnectedEdge() { return edge; }
     inline Node* getNode() { return node; }
+    inline const std::string& getSocketName() { return name; }
+
 private:
     Node* node;
     NodeEdge* edge; // Denotes the edge to which this socket is connected
     uint32_t index;
     SocketPos position;
+    SocketType type;
     GraphicsSocket* grSocket;
+    std::string name;
 };
