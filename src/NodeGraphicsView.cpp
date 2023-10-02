@@ -15,4 +15,6 @@ NodeGraphicsView::NodeGraphicsView(NodeScene* scene, QWidget* parent)
 
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
+    // Enable selection using mouse
+    setDragMode(QGraphicsView::RubberBandDrag);
 }

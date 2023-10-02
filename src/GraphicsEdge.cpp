@@ -11,7 +11,7 @@
 #include <iostream>
 #include <algorithm>
 
-constexpr uint32_t kEdgeControlPointCurvature = 100;
+constexpr uint32_t kEdgeControlPointCurvature = 25;
 
 GraphicsEdge::GraphicsEdge(NodeEdge* edge, QGraphicsItem* parent)
     :edge(edge)
@@ -52,10 +52,27 @@ QPainterPath GraphicsEdge::shape() const
         destinationPos = destPos;
 
     auto dist = (destinationPos.x() - sourcePos.x()) * 0.5f;
-    if (sourcePos.x() > destinationPos.y()) dist *= -1;
+    //if(sourcePos.x() > destinationPos.y()) dist *= -1;
+
+    // Improved curve 
+    auto cpx_s = +dist;
+    auto cpx_d = -dist;
+    auto cpy_s = 0;
+    auto cpy_d = 0;
+
+    auto sspos = edge->getStartSocket()->getSocketPos();
+
+    if ((sourcePos.x() > destinationPos.x() && (sspos == RIGHT_TOP || sspos == RIGHT_BOTTOM)) || (sourcePos.x() < destinationPos.x() && (sspos == LEFT_BOTTOM || sspos == LEFT_TOP))) {
+        cpx_d *= -1;
+        cpx_s *= -1;
+    }
+
+    cpy_d = (sourcePos.y() - destinationPos.y()) / std::max(abs(sourcePos.y() - destinationPos.y()), 0.00001) * kEdgeControlPointCurvature;
+    cpy_s = (destinationPos.y() - sourcePos.y()) / std::max(abs(destinationPos.y() - sourcePos.y()), 0.00001) * kEdgeControlPointCurvature;
+
 
     path = QPainterPath(sourcePos);
-    path.cubicTo(sourcePos.x() + dist, sourcePos.y(), destinationPos.x() - dist, destinationPos.y(), destinationPos.x(), destinationPos.y());
+    path.cubicTo(sourcePos.x() + cpx_s, sourcePos.y() + cpy_s, destinationPos.x() + cpx_d, destinationPos.y() + cpy_d, destinationPos.x(), destinationPos.y());
     return path;
 }
 
