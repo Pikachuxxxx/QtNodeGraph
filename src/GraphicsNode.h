@@ -10,7 +10,7 @@ class GraphicsNode : public QGraphicsItem
 {
 public:
     GraphicsNode(Node* node);
-    ~GraphicsNode() {}
+    ~GraphicsNode() { prepareGeometryChange(); }
 
     void initSockets();
     void initContent();

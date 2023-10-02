@@ -14,7 +14,7 @@ class GraphicsSocket : public QGraphicsItem
 {
 public:
     GraphicsSocket(Socket* socket, std::string colorHex = "#FFFF7700");
-    ~GraphicsSocket() {}
+    ~GraphicsSocket() { prepareGeometryChange(); }
 
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override
     {

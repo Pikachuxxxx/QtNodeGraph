@@ -1,5 +1,8 @@
 #pragma once
 
+#include <QList>
+#include <QGraphicsItem>
+
 class NodeScene;
 class Socket;
 class GraphicsEdge;
@@ -18,13 +21,14 @@ public:
 
     void updatePositions();
 
-    Socket* getStartSocket() const {return startSocket;}
+    Socket* getStartSocket() const { return startSocket; }
     void setStartSocket(Socket* socket);
-    Socket* getEndSocket() const {return endSocket;}
+    Socket* getEndSocket() const { return endSocket; }
     void setEndSocket(Socket* socket);
 
     void removeFromSockets();
     void remove();
+    void select();
 
     inline GraphicsEdge* getGraphicsEdge() { return grEdge; }
     inline NodeScene* getScene() { return m_Scene; }

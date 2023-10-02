@@ -24,14 +24,14 @@ NodeGraphicsView::NodeGraphicsView(NodeScene* scene, QWidget* parent)
 void NodeGraphicsView::deleteSelected()
 {
     auto& selectedItems = m_Scene->getGraphicsScene()->selectedItems();
-    for (auto item : selectedItems) {
-        // If it's a graphics edge
+    for (auto& item : selectedItems) {
         if (dynamic_cast<GraphicsEdge*>(item)) {
             dynamic_cast<GraphicsEdge*>(item)->getEdge()->remove();
         }
-        // If it's a graphics node
         else if (dynamic_cast<GraphicsNode*>(item)) {
             dynamic_cast<GraphicsNode*>(item)->getNode()->remove();
         }
+        selectedItems.erase(std::remove(selectedItems.begin(), selectedItems.end(), item), selectedItems.end());
+        item = nullptr;
     }
 }

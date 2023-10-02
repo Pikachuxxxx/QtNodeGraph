@@ -10,6 +10,7 @@
 #include "Socket.h"
 #include "NodeEdge.h"
 #include "GraphicsEdge.h"
+#include "NodeScene.h"
 
 class NodeScene;
 class Socket;
@@ -45,6 +46,11 @@ public:
         // Delete is used for deleting selected items (nodes and edges)
         else if (e->key() == Qt::Key_Delete) {
             deleteSelected();
+        }
+        else if (e->key() == Qt::Key_C)
+        {
+            auto& items = m_Scene->getGraphicsScene()->items();
+            std::cout << "Items count : " << items.count() << std::endl;
         }
         else
             QGraphicsView::keyPressEvent(e);

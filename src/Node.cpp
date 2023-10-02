@@ -57,6 +57,9 @@ void Node::setPos(uint32_t x, uint32_t y)
 
 QPointF Node::getSocketPosition(uint32_t index, SocketPos pos)
 {
+    if (!graphicsNode)
+        return QPointF();
+
     float x = 0, y = 0;
     if (pos == LEFT_TOP || pos == LEFT_BOTTOM) x = 0; else x = graphicsNode->getWidth();
 
@@ -79,8 +82,10 @@ void Node::remove()
         if (output->hasEdge())
             output->getEdge()->remove();
     }
-
-    scene->getGraphicsScene()->removeItem(graphicsNode);
+    // Doing remove item instead of delete noice
+    //graphicsNode->~GraphicsNode();
+    //scene->getGraphicsScene()->removeItem(graphicsNode);
+    delete graphicsNode;
     graphicsNode = nullptr;
     scene->removeNode(this);
 }

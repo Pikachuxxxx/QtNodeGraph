@@ -39,6 +39,9 @@ QRectF GraphicsEdge::boundingRect() const
 
 QPainterPath GraphicsEdge::shape() const
 {
+    if (!edge)
+        return path;
+
     QPainterPath path;
     auto sourcePos = edge->getStartSocket()->getPos();
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
@@ -78,6 +81,9 @@ QPainterPath GraphicsEdge::shape() const
 
 void GraphicsEdge::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
+    if (!edge)
+        return;
+
     updatePath();
 
     if (edge->getEndSocket()) {
@@ -100,6 +106,9 @@ GraphicsEdgeDirect::GraphicsEdgeDirect(NodeEdge* edge, QGraphicsItem* parent)
 
 void GraphicsEdgeDirect::updatePath()
 {
+    if (!edge)
+        return;
+
     auto sourcePos = edge->getStartSocket()->getPos();
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
 
@@ -123,6 +132,9 @@ GraphicsEdgeBezier::GraphicsEdgeBezier(NodeEdge* edge, QGraphicsItem* parent)
 
 void GraphicsEdgeBezier::updatePath()
 {
+    if (!edge)
+        return;
+
     auto sourcePos = edge->getStartSocket()->getPos();
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
 
