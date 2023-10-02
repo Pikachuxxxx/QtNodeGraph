@@ -23,6 +23,9 @@ public:
     uint32_t getTitleHeight() const { return titleHeight; }
     uint32_t getEdgeSize() const { return edge_size; }
     uint32_t getPadding() const { return padding; }
+
+    inline Node* getNode() { return node; }
+
 private:
     Node* node;
     QColor titleColor;

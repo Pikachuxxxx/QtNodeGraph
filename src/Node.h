@@ -21,14 +21,16 @@ public:
 
     QPointF getSocketPosition(uint32_t index, SocketPos pos);
 
+    void remove();
+
     void setPos(uint32_t x, uint32_t y);
-    NodeScene* getScene() { return scene; }
-    const std::string& getTitle() const { return title; }
-    NodeContentWidget* getContent() { return nodeContent; }
-    void setContent(NodeContentWidget* widget) { nodeContent = widget; }
-    GraphicsNode* getGraphicsNode() { return graphicsNode; }
-    Socket* getInputSocket(uint32_t idx) { return inputs[idx]; }
-    Socket* getOutputSocket(uint32_t idx) { return outputs[idx]; }
+    inline NodeScene* getScene() { return scene; }
+    inline const std::string& getTitle() const { return title; }
+    inline NodeContentWidget* getContent() { return nodeContent; }
+    inline void setContent(NodeContentWidget* widget) { nodeContent = widget; }
+    inline GraphicsNode* getGraphicsNode() { return graphicsNode; }
+    inline Socket* getInputSocket(uint32_t idx) { return inputs[idx]; }
+    inline Socket* getOutputSocket(uint32_t idx) { return outputs[idx]; }
 
 private:
     NodeScene* scene;
@@ -38,5 +40,4 @@ private:
     std::vector<Socket*> inputs;
     std::vector<Socket*> outputs;
     uint32_t socketSpacing = 24;
-
 };

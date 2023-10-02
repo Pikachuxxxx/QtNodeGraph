@@ -48,7 +48,7 @@ void GraphicsNode::initContent()
 {
     auto grContent = new QGraphicsProxyWidget(this);
     node->getContent()->setGeometry(QRect(edge_size, titleHeight + edge_size, width - 2 * edge_size, height - 2 * edge_size - titleHeight));
-    //grContent->setWidget(node->getContent());
+    grContent->setWidget(node->getContent());
 }
 
 void GraphicsNode::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)

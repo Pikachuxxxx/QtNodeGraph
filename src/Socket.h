@@ -31,6 +31,7 @@ public:
 
     QPointF getPos();
     inline SocketPos getSocketPos() { return position; }
+    inline bool hasEdge() { return edge ? true : false; }
     inline NodeEdge* getEdge() { return edge; }
     inline void setConnectedEdge(NodeEdge* edge) { this->edge = edge; }
     inline NodeEdge* getConnectedEdge() { return edge; }
@@ -38,11 +39,11 @@ public:
     inline const std::string& getSocketName() { return name; }
 
 private:
-    Node* node;
-    NodeEdge* edge; // Denotes the edge to which this socket is connected
+    Node* node = nullptr;
+    NodeEdge* edge = nullptr; // Denotes the edge to which this socket is connected
     uint32_t index;
     SocketPos position;
     SocketType type;
-    GraphicsSocket* grSocket;
+    GraphicsSocket* grSocket = nullptr;
     std::string name;
 };

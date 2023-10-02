@@ -19,6 +19,8 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
     void setDestPos(QPointF pos) { destPos = pos; updatePath(); }
+
+    inline NodeEdge* getEdge() { return edge; }
 protected:
     NodeEdge* edge;
     QPen pathPen;

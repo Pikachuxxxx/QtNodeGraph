@@ -30,6 +30,7 @@ public:
 
     void keyPressEvent(QKeyEvent* e) override
     {
+        // Escape is used to stop dragging edge
         if (e->key() == Qt::Key_Escape) {
             if (m_Mode == DRAG_MODE::EDGE) {
                 m_Mode = DRAG_MODE::NO_OP;
@@ -41,6 +42,12 @@ public:
                 m_DragEdge = nullptr;
             }
         }
+        // Delete is used for deleting selected items (nodes and edges)
+        else if (e->key() == Qt::Key_Delete) {
+            deleteSelected();
+        }
+        else
+            QGraphicsView::keyPressEvent(e);
     }
 
     // TODO: Implement functions for L/M/R press/release
@@ -211,6 +218,8 @@ public:
 
         return false;
     }
+
+    void deleteSelected();
 
 private:
     float zoomInFactor = 1.25f;

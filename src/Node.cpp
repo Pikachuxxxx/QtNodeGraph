@@ -3,6 +3,7 @@
 #include "NodeScene.h"
 #include "GraphicsNode.h"
 #include "NodeContentWidget.h"
+#include "NodeEdge.h"
 
 Node::Node(NodeScene* scene, std::string nodeName, uint32_t inputsCount, uint32_t outputsCount)
     : scene(scene), title(nodeName)
@@ -57,12 +58,29 @@ void Node::setPos(uint32_t x, uint32_t y)
 QPointF Node::getSocketPosition(uint32_t index, SocketPos pos)
 {
     float x = 0, y = 0;
-    if(pos == LEFT_TOP || pos == LEFT_BOTTOM) x = 0; else x = graphicsNode->getWidth();
+    if (pos == LEFT_TOP || pos == LEFT_BOTTOM) x = 0; else x = graphicsNode->getWidth();
 
-    if(pos == LEFT_TOP || pos == RIGHT_TOP)
+    if (pos == LEFT_TOP || pos == RIGHT_TOP)
         y = graphicsNode->getTitleHeight() + graphicsNode->getEdgeSize() + index * socketSpacing + graphicsNode->getPadding();
-    else if(pos == LEFT_BOTTOM || pos == RIGHT_BOTTOM)
+    else if (pos == LEFT_BOTTOM || pos == RIGHT_BOTTOM)
         y = graphicsNode->getHeight() - graphicsNode->getEdgeSize() - index * socketSpacing - graphicsNode->getPadding();
 
     return QPointF(x, y);
+}
+
+void Node::remove()
+{
+    for (auto input : inputs) {
+        if (input->hasEdge())
+            input->getEdge()->remove();
+    }
+
+    for (auto output : outputs) {
+        if (output->hasEdge())
+            output->getEdge()->remove();
+    }
+
+    scene->getGraphicsScene()->removeItem(graphicsNode);
+    graphicsNode = nullptr;
+    scene->removeNode(this);
 }

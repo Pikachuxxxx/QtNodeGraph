@@ -27,15 +27,17 @@ void GraphicsSocket::paint(QPainter* painter, const QStyleOptionGraphicsItem* op
     painter->setPen(pen);
     painter->drawEllipse(-radius, -radius, 2 * radius, 2 * radius);
     // painter->drawRect(-radius, -radius, 2 * radius, 2 * radius);
+
+#if 0
     // Paint the name
     painter->setBrush(Qt::NoBrush);
     painter->setPen(QPen(QColor("#FFFFFF")));
     // Calculate this based on the type of the socket and also adjust the width of the node
     QFontMetrics fm = painter->fontMetrics();
-
     auto spos = m_Socket->getSocketPos();
     if (spos == LEFT_TOP || spos == LEFT_BOTTOM)
         painter->drawText(8, 0, m_Socket->getSocketName().c_str());
     else
         painter->drawText(-8 - fm.horizontalAdvance(m_Socket->getSocketName().c_str()), 0, m_Socket->getSocketName().c_str());
+#endif
 }
