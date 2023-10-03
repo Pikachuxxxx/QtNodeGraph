@@ -19,6 +19,9 @@ NodeGraphicsView::NodeGraphicsView(NodeScene* scene, QWidget* parent)
 
     // Enable selection using mouse
     setDragMode(QGraphicsView::RubberBandDrag);
+
+    m_Cutline = new GraphicsCutLine;
+    scene->getGraphicsScene()->addItem(m_Cutline);
 }
 
 void NodeGraphicsView::deleteSelected()
@@ -34,4 +37,9 @@ void NodeGraphicsView::deleteSelected()
         selectedItems.erase(std::remove(selectedItems.begin(), selectedItems.end(), item), selectedItems.end());
         item = nullptr;
     }
+}
+
+void NodeGraphicsView::cutIntersectingEdges()
+{
+
 }

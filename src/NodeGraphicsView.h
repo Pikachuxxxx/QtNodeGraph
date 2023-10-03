@@ -5,20 +5,27 @@
 #include <QObject>
 #include <QGraphicsView>
 #include <QMouseEvent>
+#include <QApplication>
 
 #include "GraphicsSocket.h"
 #include "Socket.h"
 #include "NodeEdge.h"
 #include "GraphicsEdge.h"
 #include "NodeScene.h"
+#include "GraphicsCutLine.h"
 
 class NodeScene;
 class Socket;
 
+// INCOMPLETE
+// [] 14 : Deleting Edges (bugs, deleting multiple sometimes causes crash)
+// [] 15 : Cutting edges (paint won't work for GraphicsCutEdge, check the bounding rect of GraphicsCutEdge)
+
 enum class DRAG_MODE
 {
     NO_OP,
-    EDGE
+    EDGE_DRAG,
+    EDGE_CUT
 };
 
 constexpr uint32_t EDGE_DRAG_THRESHOLD = 10; // pixels
@@ -33,7 +40,7 @@ public:
     {
         // Escape is used to stop dragging edge
         if (e->key() == Qt::Key_Escape) {
-            if (m_Mode == DRAG_MODE::EDGE) {
+            if (m_Mode == DRAG_MODE::EDGE_DRAG) {
                 m_Mode = DRAG_MODE::NO_OP;
                 std::cout << "End dragging edge" << std::endl;
 
@@ -64,34 +71,13 @@ public:
         setDragMode(QGraphicsView::RubberBandDrag);
 
         if (event->button() == Qt::LeftButton) {
-            auto item = itemAt(event->pos());
-
-            m_lastLMBClickScenePos = mapToScene(event->pos());
-
-            if (dynamic_cast<GraphicsSocket*>(item))
-            {
-                std::cout << "[Node Graphics View] Socket was clicked!" << std::endl;
-                if (m_Mode == DRAG_MODE::NO_OP) {
-                    edgeDragStart(item);
-                    // Draw an edge here
-                    m_LastStartSocket = static_cast<GraphicsSocket*>(item)->getSocket();
-                    m_DragEdge = new NodeEdge(m_Scene, static_cast<GraphicsSocket*>(item)->getSocket(), nullptr);
-                    return;
-                }
-            }
-            if (m_Mode == DRAG_MODE::EDGE) {
-                if (edgeDragEnd(item))
-                    return;
-            }
-            QGraphicsView::mousePressEvent(event);
+            leftMousePress(event);
         }
         else if (event->button() == Qt::RightButton) {
-            // Panning the canvas using RMB
-            auto releaseEvent = new QMouseEvent(QMouseEvent::MouseButtonRelease, event->localPos(), event->screenPos(), Qt::LeftButton, Qt::NoButton, event->modifiers());
-            QGraphicsView::mousePressEvent(releaseEvent);
-            setDragMode(QGraphicsView::ScrollHandDrag);
-            auto fakeEvent = new QMouseEvent(event->type(), event->localPos(), event->screenPos(), Qt::LeftButton, event->buttons() | Qt::LeftButton, event->modifiers());
-            QGraphicsView::mousePressEvent(fakeEvent);
+            rightMousePress(event);
+        }
+        else if (event->button() == Qt::MiddleButton) {
+            middleMousePress(event);
         }
         else
             QGraphicsView::mousePressEvent(event);
@@ -101,25 +87,13 @@ public:
     void mouseReleaseEvent(QMouseEvent* event) override
     {
         if (event->button() == Qt::LeftButton) {
-            auto item = itemAt(event->pos());
-            // Works for a continuous drag of mouse and released on the socket (2nd type of drawing edges from socket)
-            // press on socket this won't work cause dist is very less when released, if we make a long drag dist is more and this alternate form will work,
-            // in this case socket press won't work as well as release will cause edgeDragEnd
-            if (m_Mode == DRAG_MODE::EDGE) {
-                auto m_newLMBReleaseScenePos = mapToScene(event->pos());
-                auto dist = m_newLMBReleaseScenePos - m_lastLMBClickScenePos;
-                if (dist.x() * dist.x() + dist.y() * dist.y() > EDGE_DRAG_THRESHOLD * EDGE_DRAG_THRESHOLD) {
-                    if (edgeDragEnd(item)) return;
-                }
-            }
-
-            QGraphicsView::mouseReleaseEvent(event);
+            leftMouseRelease(event);
         }
         else if (event->button() == Qt::RightButton) {
-            // Panning the canvas using RMB
-            auto fakeEvent = new QMouseEvent(event->type(), event->localPos(), event->screenPos(), Qt::LeftButton, event->buttons() & ~Qt::LeftButton, event->modifiers());
-            setDragMode(QGraphicsView::NoDrag);
-            QGraphicsView::mouseReleaseEvent(fakeEvent);
+            rightMouseRelease(event);
+        }
+        else if (event->button() == Qt::MiddleButton) {
+            middleMouseRelease(event);
         }
         else
             QGraphicsView::mouseReleaseEvent(event);
@@ -127,11 +101,17 @@ public:
 
     void mouseMoveEvent(QMouseEvent* event) override
     {
-        if (m_Mode == DRAG_MODE::EDGE) {
+        if (m_Mode == DRAG_MODE::EDGE_DRAG) {
             auto pos = mapToScene(event->pos());
             m_DragEdge->getGraphicsEdge()->setDestPos(pos);
             // Manually trigger repaint
             m_DragEdge->getGraphicsEdge()->update();
+        }
+
+        if (m_Mode == DRAG_MODE::EDGE_CUT) {
+            auto pos = mapToScene(event->pos());
+            m_Cutline->addPoint(QPoint(pos.x(), pos.y()));
+            m_Cutline->update();
         }
 
         QGraphicsView::mouseMoveEvent(event);
@@ -166,12 +146,54 @@ public:
 
     void leftMousePress(QMouseEvent* event)
     {
+        auto item = itemAt(event->pos());
 
+        m_lastLMBClickScenePos = mapToScene(event->pos());
+
+        if (dynamic_cast<GraphicsSocket*>(item))
+        {
+            std::cout << "[Node Graphics View] Socket was clicked!" << std::endl;
+            if (m_Mode == DRAG_MODE::NO_OP) {
+                edgeDragStart(item);
+                // Draw an edge here
+                m_LastStartSocket = static_cast<GraphicsSocket*>(item)->getSocket();
+                m_DragEdge = new NodeEdge(m_Scene, static_cast<GraphicsSocket*>(item)->getSocket(), nullptr);
+                return;
+            }
+        }
+        if (m_Mode == DRAG_MODE::EDGE_DRAG) {
+            if (edgeDragEnd(item))
+                return;
+        }
+
+        // Cut edges using cut line
+        if (!item) {
+            if (event->modifiers() & Qt::ControlModifier) {
+                m_Mode = DRAG_MODE::EDGE_CUT;
+                setDragMode(QGraphicsView::NoDrag);
+                QApplication::setOverrideCursor(Qt::CrossCursor);
+                auto fakeEvent = new QMouseEvent(QEvent::MouseButtonRelease, event->localPos(), event->screenPos(), Qt::LeftButton, Qt::NoButton, event->modifiers());
+                QGraphicsView::mousePressEvent(fakeEvent);
+                return;
+            }
+        }
+
+        QGraphicsView::mousePressEvent(event);
     }
+
     void rightMousePress(QMouseEvent* event)
     {
+        //QApplication::restoreOverrideCursor();
+        //QApplication::setOverrideCursor(Qt::ArrowCursor);
 
+        // Panning the canvas using RMB
+        auto releaseEvent = new QMouseEvent(QMouseEvent::MouseButtonRelease, event->localPos(), event->screenPos(), Qt::LeftButton, Qt::NoButton, event->modifiers());
+        QGraphicsView::mousePressEvent(releaseEvent);
+        setDragMode(QGraphicsView::ScrollHandDrag);
+        auto fakeEvent = new QMouseEvent(event->type(), event->localPos(), event->screenPos(), Qt::LeftButton, event->buttons() | Qt::LeftButton, event->modifiers());
+        QGraphicsView::mousePressEvent(fakeEvent);
     }
+
     void middleMousePress(QMouseEvent* event)
     {
 
@@ -179,12 +201,41 @@ public:
 
     void leftMouseRelease(QMouseEvent* event)
     {
+        auto item = itemAt(event->pos());
+        // Works for a continuous drag of mouse and released on the socket (2nd type of drawing edges from socket)
+        // press on socket this won't work cause dist is very less when released, if we make a long drag dist is more and this alternate form will work,
+        // in this case socket press won't work as well as release will cause edgeDragEnd
+        if (m_Mode == DRAG_MODE::EDGE_DRAG) {
+            auto m_newLMBReleaseScenePos = mapToScene(event->pos());
+            auto dist = m_newLMBReleaseScenePos - m_lastLMBClickScenePos;
+            if (dist.x() * dist.x() + dist.y() * dist.y() > EDGE_DRAG_THRESHOLD * EDGE_DRAG_THRESHOLD) {
+                if (edgeDragEnd(item))
+                    return;
+            }
+        }
 
+        if (m_Mode == DRAG_MODE::EDGE_CUT) {
+            m_Mode = DRAG_MODE::NO_OP;
+            cutIntersectingEdges();
+            m_Cutline->clearLinePoints();
+            m_Cutline->update();
+            //QApplication::setOverrideCursor(Qt::ArrowCursor);
+            QApplication::restoreOverrideCursor();
+
+            return;
+        }
+
+        QGraphicsView::mouseReleaseEvent(event);
     }
+
     void rightMouseRelease(QMouseEvent* event)
     {
-
+        // Panning the canvas using RMB
+        auto fakeEvent = new QMouseEvent(event->type(), event->localPos(), event->screenPos(), Qt::LeftButton, event->buttons() & ~Qt::LeftButton, event->modifiers());
+        setDragMode(QGraphicsView::NoDrag);
+        QGraphicsView::mouseReleaseEvent(fakeEvent);
     }
+
     void middleMouseRelease(QMouseEvent* event)
     {
 
@@ -192,7 +243,7 @@ public:
 
     void edgeDragStart(QGraphicsItem* item)
     {
-        m_Mode = DRAG_MODE::EDGE;
+        m_Mode = DRAG_MODE::EDGE_DRAG;
         std::cout << "Start dragging edge" << std::endl;
         std::cout << "\t assign start socket" << std::endl;
     }
@@ -226,6 +277,7 @@ public:
     }
 
     void deleteSelected();
+    void cutIntersectingEdges();
 
 private:
     float zoomInFactor = 1.25f;
@@ -240,4 +292,5 @@ private:
     //------------------------------
     NodeEdge* m_DragEdge = nullptr;
     Socket* m_LastStartSocket = nullptr;
+    GraphicsCutLine* m_Cutline = nullptr;
 };
