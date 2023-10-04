@@ -5,11 +5,15 @@
 #include "NodeContentWidget.h"
 #include "NodeEdge.h"
 
+#include <QUndoCommand>
+
 Node::Node(NodeScene* scene, std::string nodeName, uint32_t inputsCount, uint32_t outputsCount)
     : scene(scene), title(nodeName)
 {
     nodeContent = new NodeContentWidget;
     graphicsNode = new GraphicsNode(this);
+
+    scene->getUndoStack()->push(new AddNodeCommand(this, scene->getGraphicsScene()));
 
     scene->addNode(this);
     scene->getGraphicsScene()->addItem(graphicsNode);
@@ -30,6 +34,8 @@ Node::Node(NodeScene* scene, std::string nodeName, std::vector<std::string> inpu
 {
     nodeContent = new NodeContentWidget;
     graphicsNode = new GraphicsNode(this);
+
+    scene->getUndoStack()->push(new AddNodeCommand(this, scene->getGraphicsScene()));
 
     scene->addNode(this);
     scene->getGraphicsScene()->addItem(graphicsNode);
@@ -54,6 +60,11 @@ void Node::setPos(uint32_t x, uint32_t y)
 {
     graphicsNode->setPos(x, y);
 }
+ 
+QPointF Node::getPos()
+{
+    return graphicsNode->pos();
+}
 
 QPointF Node::getSocketPosition(uint32_t index, SocketPos pos)
 {
@@ -73,6 +84,8 @@ QPointF Node::getSocketPosition(uint32_t index, SocketPos pos)
 
 void Node::remove()
 {
+    scene->getUndoStack()->push(new RemoveNodeCommand(scene->getGraphicsScene()));
+
     for (auto input : inputs) {
         if (input->hasEdge())
             input->getEdge()->remove();
@@ -88,4 +101,108 @@ void Node::remove()
     delete graphicsNode;
     graphicsNode = nullptr;
     scene->removeNode(this);
+}
+
+void Node::add()
+{
+    for (auto input : inputs) {
+        if (input->hasEdge())
+            input->getEdge()->add();
+    }
+
+    for (auto output : outputs) {
+        if (output->hasEdge())
+            output->getEdge()->add();
+    }
+
+    graphicsNode = new GraphicsNode(this);
+
+    scene->addNode(this);
+    scene->getGraphicsScene()->addItem(graphicsNode);
+}
+
+AddNodeCommand::AddNodeCommand(Node* node, QGraphicsScene* scene)
+    : mNode(node), mGraphicsScene(scene)
+{
+    mNode = node;
+    mInitialPosition = node->getPos();
+    mGraphicsScene->update();
+
+    setText("Added node");
+}
+
+void AddNodeCommand::undo()
+{
+    mNode->remove();
+    mGraphicsScene->update();
+}
+
+void AddNodeCommand::redo()
+{
+    mNode->add();
+    mNode->setPos(mInitialPosition.x(), mInitialPosition.y());
+    mGraphicsScene->clearSelection();
+    mGraphicsScene->update();
+}
+
+RemoveNodeCommand::RemoveNodeCommand(QGraphicsScene* scene)
+    : mGraphicsScene(scene)
+{
+    QList<QGraphicsItem*> list = scene->selectedItems();
+    if(list.size() > 0 )
+    list.first()->setSelected(false);
+
+    mNode = static_cast<GraphicsNode*>(list.first())->getNode();
+    mInitialPosition = mNode->getPos();
+    mGraphicsScene->update();
+
+    setText("Removed node");
+}
+
+void RemoveNodeCommand::undo()
+{
+    mNode->add();
+    mNode->setPos(mInitialPosition.x(), mInitialPosition.y());
+    mGraphicsScene->clearSelection();
+    mGraphicsScene->update();
+}
+
+void RemoveNodeCommand::redo()
+{
+    mNode->remove();
+    mGraphicsScene->update();
+}
+
+MoveNodeCommand::MoveNodeCommand(Node* node, QPointF oldPos, QGraphicsScene* scene)
+    : mNode(node), mOldPosition(oldPos), mNewPosition(node->getPos()), mGraphicsScene(scene)
+
+{
+    setText("Moved node");
+}
+
+void MoveNodeCommand::undo()
+{
+    mNode->setPos(mOldPosition.x(), mOldPosition.y());
+    mGraphicsScene->update();
+
+    setText("Moved undo");
+}
+
+void MoveNodeCommand::redo()
+{
+    mNode->setPos(mNewPosition.x(), mNewPosition.y());
+    mGraphicsScene->update();
+}
+
+bool MoveNodeCommand::mergeWith(const QUndoCommand* other)
+{
+    const MoveNodeCommand* moveCommand = static_cast<const MoveNodeCommand*>(other);
+    Node* item = moveCommand->mNode;
+
+    if (item != mNode)
+        return false;
+
+    mNewPosition = item->getPos();
+
+    return true;
 }

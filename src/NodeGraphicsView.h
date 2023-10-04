@@ -13,6 +13,8 @@
 #include "GraphicsEdge.h"
 #include "NodeScene.h"
 #include "GraphicsCutLine.h"
+#include "GraphicsNode.h"
+#include "Node.h"
 
 class NodeScene;
 class Socket;
@@ -150,6 +152,9 @@ public:
 
         m_lastLMBClickScenePos = mapToScene(event->pos());
 
+        if (dynamic_cast<GraphicsNode*>(item))
+            m_NodeOldPos = item->pos();
+
         if (dynamic_cast<GraphicsSocket*>(item))
         {
             std::cout << "[Node Graphics View] Socket was clicked!" << std::endl;
@@ -202,6 +207,11 @@ public:
     void leftMouseRelease(QMouseEvent* event)
     {
         auto item = itemAt(event->pos());
+
+        if (dynamic_cast<GraphicsNode*>(item) && item->pos() != m_NodeOldPos)
+            m_Scene->getUndoStack()->push(new MoveNodeCommand(dynamic_cast<GraphicsNode*>(item)->getNode(), m_NodeOldPos, m_Scene->getGraphicsScene()));
+
+
         // Works for a continuous drag of mouse and released on the socket (2nd type of drawing edges from socket)
         // press on socket this won't work cause dist is very less when released, if we make a long drag dist is more and this alternate form will work,
         // in this case socket press won't work as well as release will cause edgeDragEnd
@@ -293,4 +303,5 @@ private:
     NodeEdge* m_DragEdge = nullptr;
     Socket* m_LastStartSocket = nullptr;
     GraphicsCutLine* m_Cutline = nullptr;
+    QPointF m_NodeOldPos;
 };

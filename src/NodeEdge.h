@@ -28,6 +28,7 @@ public:
 
     void removeFromSockets();
     void remove();
+    void add();
     void select();
 
     inline GraphicsEdge* getGraphicsEdge() { return grEdge; }
@@ -37,4 +38,5 @@ private:
     GraphicsEdge* grEdge;
     Socket* startSocket;
     Socket* endSocket;
+    EdgeType type;
 };

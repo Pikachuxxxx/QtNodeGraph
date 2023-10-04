@@ -1,4 +1,5 @@
 #pragma once
+#include <QUndoStack>
 
 #include "NodeGraphicsScene.h"
 
@@ -22,6 +23,9 @@ public:
     QPoint getOrigin() { return m_GraphicsScene->getOrigin(); }
 
     NodeGraphicsScene* getGraphicsScene() { return m_GraphicsScene; }
+
+    inline QUndoStack* getUndoStack() { return  m_GraphicsScene->getUndoStack(); }
+
 private:
     NodeGraphicsScene* m_GraphicsScene;
     std::vector<Node*> m_Nodes;

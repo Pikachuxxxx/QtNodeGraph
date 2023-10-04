@@ -3,6 +3,7 @@
 #include <string>
 
 #include <QGraphicsItem>
+#include <QUndoCommand>
 
 #include "Socket.h"
 
@@ -22,7 +23,9 @@ public:
     QPointF getSocketPosition(uint32_t index, SocketPos pos);
 
     void remove();
+    void add();
 
+    inline QPointF getPos();
     void setPos(uint32_t x, uint32_t y);
     inline NodeScene* getScene() { return scene; }
     inline const std::string& getTitle() const { return title; }
@@ -40,4 +43,51 @@ private:
     std::vector<Socket*> inputs;
     std::vector<Socket*> outputs;
     uint32_t socketSpacing = 24;
+};
+
+// Commands for Undo and Redo 
+// Add, Remove and Move variations
+
+class AddNodeCommand : public QUndoCommand
+{
+public:
+    AddNodeCommand(Node* node, QGraphicsScene* scene);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    Node* mNode;
+    QGraphicsScene* mGraphicsScene;
+    QPointF mInitialPosition;
+};
+
+class RemoveNodeCommand : public QUndoCommand
+{
+public:
+    RemoveNodeCommand(QGraphicsScene* scene);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    Node* mNode;
+    QGraphicsScene* mGraphicsScene;
+    QPointF mInitialPosition;
+};
+
+class MoveNodeCommand : public QUndoCommand
+{
+public:
+    MoveNodeCommand(Node* node, QPointF oldPos, QGraphicsScene* scene);
+
+    void undo() override;
+    void redo() override;
+    bool mergeWith(const QUndoCommand* other) override;
+
+private:
+    Node* mNode;
+    QGraphicsScene* mGraphicsScene;
+    QPointF mOldPosition;
+    QPointF mNewPosition;
 };

@@ -7,7 +7,7 @@
 #include <iostream>
 
 NodeEdge::NodeEdge(NodeScene* scene, Socket* startSocket, Socket* endSocket, EdgeType type)
-    : m_Scene(scene), startSocket(startSocket), endSocket(endSocket)
+    : m_Scene(scene), startSocket(startSocket), endSocket(endSocket), type(type)
 {
     if (type == BEZIER)
         grEdge = new GraphicsEdgeBezier(this);
@@ -56,6 +56,23 @@ void NodeEdge::remove()
     grEdge = nullptr;
     removeFromSockets();
     m_Scene->removeEdge(this);
+}
+
+void NodeEdge::add()
+{
+    if (type == BEZIER)
+        grEdge = new GraphicsEdgeBezier(this);
+    else if (type == DIRECT)
+        grEdge = new GraphicsEdgeDirect(this);
+
+    m_Scene->addEdge(this);
+    m_Scene->getGraphicsScene()->addItem(grEdge);
+
+    if (startSocket)
+        startSocket->setConnectedEdge(this);
+
+    if (endSocket)
+        endSocket->setConnectedEdge(this);
 }
 
 void NodeEdge::select()
