@@ -27,6 +27,7 @@ GraphicsEdge::GraphicsEdge(NodeEdge* edge, QGraphicsItem* parent)
 
     this->setZValue(-1);
 
+    // Initialize dest position with source position
     auto sourcePos = edge->getStartSocket()->getPos();
     sourcePos += edge->getStartSocket()->getNode()->getGraphicsNode()->pos();
     destPos = sourcePos;
@@ -70,8 +71,8 @@ QPainterPath GraphicsEdge::shape() const
         cpx_s *= -1;
     }
 
-    cpy_d = (sourcePos.y() - destinationPos.y()) / std::max(abs(sourcePos.y() - destinationPos.y()), 0.00001) * kEdgeControlPointCurvature;
-    cpy_s = (destinationPos.y() - sourcePos.y()) / std::max(abs(destinationPos.y() - sourcePos.y()), 0.00001) * kEdgeControlPointCurvature;
+    cpy_d = (sourcePos.y() - destinationPos.y()) / std::max(abs(sourcePos.y() - destinationPos.y()), 0.001) * kEdgeControlPointCurvature;
+    cpy_s = (destinationPos.y() - sourcePos.y()) / std::max(abs(destinationPos.y() - sourcePos.y()), 0.001) * kEdgeControlPointCurvature;
 
 
     path = QPainterPath(sourcePos);

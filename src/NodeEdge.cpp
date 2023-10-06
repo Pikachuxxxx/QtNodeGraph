@@ -26,15 +26,20 @@ NodeEdge::NodeEdge(NodeScene* scene, Socket* startSocket, Socket* endSocket, Edg
 
 void NodeEdge::setStartSocket(Socket* socket)
 {
-    startSocket = socket; grEdge->updatePath();
+    startSocket = socket;
     startSocket->setConnectedEdge(this);
+    grEdge = socket->getConnectedEdge()->grEdge;
+    if (grEdge)
+        grEdge->updatePath();
 
 }
 void NodeEdge::setEndSocket(Socket* socket)
 {
-    endSocket = socket; grEdge->updatePath();
+    endSocket = socket;
     endSocket->setConnectedEdge(this);
-
+    grEdge = socket->getConnectedEdge()->grEdge;
+    if (grEdge)
+        grEdge->updatePath();
 }
 
 void NodeEdge::removeFromSockets()

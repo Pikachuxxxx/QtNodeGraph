@@ -28,7 +28,7 @@ void GraphicsSocket::paint(QPainter* painter, const QStyleOptionGraphicsItem* op
     painter->drawEllipse(-radius, -radius, 2 * radius, 2 * radius);
     // painter->drawRect(-radius, -radius, 2 * radius, 2 * radius);
 
-#if 0
+#if 1
     // Paint the name
     painter->setBrush(Qt::NoBrush);
     painter->setPen(QPen(QColor("#FFFFFF")));

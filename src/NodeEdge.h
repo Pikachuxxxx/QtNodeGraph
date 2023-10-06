@@ -34,9 +34,9 @@ public:
     inline GraphicsEdge* getGraphicsEdge() { return grEdge; }
     inline NodeScene* getScene() { return m_Scene; }
 private:
-    NodeScene* m_Scene;
-    GraphicsEdge* grEdge;
-    Socket* startSocket;
-    Socket* endSocket;
+    NodeScene* m_Scene = nullptr;
+    GraphicsEdge* grEdge = nullptr;
+    Socket* startSocket = nullptr;
+    Socket* endSocket = nullptr;
     EdgeType type;
 };

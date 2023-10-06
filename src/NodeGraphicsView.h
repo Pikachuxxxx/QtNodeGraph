@@ -20,8 +20,11 @@ class NodeScene;
 class Socket;
 
 // INCOMPLETE
-// [] 14 : Deleting Edges (bugs, deleting multiple sometimes causes crash)
-// [] 15 : Cutting edges (paint won't work for GraphicsCutEdge, check the bounding rect of GraphicsCutEdge)
+// [] 14    : Deleting Edges (bugs, deleting multiple sometimes causes crash)
+// [] 15    : Cutting edges (paint won't work for GraphicsCutEdge, check the bounding rect of GraphicsCutEdge)
+// [] 19/20 : Undo/Redo fix bugs and finish implementation
+// [] 22/23 : Cut/Copy/Paste (Razix Alpha release)
+// [-] 25   : File has changed (Razix Alpha release, implemented in razix itself not in this project!)
 
 enum class DRAG_MODE
 {
@@ -114,6 +117,10 @@ public:
             auto pos = mapToScene(event->pos());
             m_Cutline->addPoint(QPoint(pos.x(), pos.y()));
             m_Cutline->update();
+
+            //auto bbr = m_Cutline->boundingRect();
+
+            //std::cout << bbr.x() <<  " " << bbr.y() << " " << bbr.width() << " " << bbr.height() << "\n";
         }
 
         QGraphicsView::mouseMoveEvent(event);
@@ -159,15 +166,14 @@ public:
         {
             std::cout << "[Node Graphics View] Socket was clicked!" << std::endl;
             if (m_Mode == DRAG_MODE::NO_OP) {
-                edgeDragStart(item);
                 // Draw an edge here
-                m_LastStartSocket = static_cast<GraphicsSocket*>(item)->getSocket();
+                edgeDragStart(dynamic_cast<GraphicsSocket*>(item));
                 m_DragEdge = new NodeEdge(m_Scene, static_cast<GraphicsSocket*>(item)->getSocket(), nullptr);
                 return;
             }
         }
         if (m_Mode == DRAG_MODE::EDGE_DRAG) {
-            if (edgeDragEnd(item))
+            if (edgeDragEnd(dynamic_cast<GraphicsSocket*>(item)))
                 return;
         }
 
@@ -219,7 +225,7 @@ public:
             auto m_newLMBReleaseScenePos = mapToScene(event->pos());
             auto dist = m_newLMBReleaseScenePos - m_lastLMBClickScenePos;
             if (dist.x() * dist.x() + dist.y() * dist.y() > EDGE_DRAG_THRESHOLD * EDGE_DRAG_THRESHOLD) {
-                if (edgeDragEnd(item))
+                if (edgeDragEnd(dynamic_cast<GraphicsSocket*>(item)))
                     return;
             }
         }
@@ -251,26 +257,47 @@ public:
 
     }
 
-    void edgeDragStart(QGraphicsItem* item)
+    void edgeDragStart(GraphicsSocket* grSocket)
     {
         m_Mode = DRAG_MODE::EDGE_DRAG;
         std::cout << "Start dragging edge" << std::endl;
         std::cout << "\t assign start socket" << std::endl;
+
+        m_LastStartSocket = grSocket->getSocket();
+        m_PreviousEdge = m_LastStartSocket->getConnectedEdge();
     }
 
     // TODO: Add option for user to use single edge input/output nodes
 
-    bool edgeDragEnd(QGraphicsItem* item)
+    bool edgeDragEnd(GraphicsSocket* grSocket)
     {
         m_Mode = DRAG_MODE::NO_OP;
         std::cout << "End dragging edge" << std::endl;
 
-        if (dynamic_cast<GraphicsSocket*>(item))
+        if (grSocket)
         {
-            if (dynamic_cast<GraphicsSocket*>(item)->getSocket() != m_LastStartSocket) {
+            if (grSocket->getSocket() != m_LastStartSocket) {
+
+                // If the previous socket is null, the final socked might have a previous edge so mark that as previous edge
+                if (!m_PreviousEdge)
+                    m_PreviousEdge = grSocket->getSocket()->getConnectedEdge();
 
                 std::cout << "\t assign end socket" << std::endl;
-                m_DragEdge->setEndSocket(dynamic_cast<GraphicsSocket*>(item)->getSocket());
+
+                // Also even if we have previous edge the current socket can have a edge already so remove that too
+                if (grSocket->getSocket()->hasEdge())
+                    grSocket->getSocket()->getConnectedEdge()->remove();
+
+
+                // Delete old edge
+                if (m_PreviousEdge) {
+                    m_PreviousEdge->remove();
+                    delete m_PreviousEdge;
+                    m_PreviousEdge = nullptr;
+                }
+
+                m_DragEdge->setStartSocket(m_LastStartSocket);
+                m_DragEdge->setEndSocket(grSocket->getSocket());
                 m_DragEdge->getStartSocket()->setConnectedEdge(m_DragEdge);
                 m_DragEdge->getEndSocket()->setConnectedEdge(m_DragEdge);
                 m_DragEdge->getGraphicsEdge()->update();
@@ -282,6 +309,7 @@ public:
         m_DragEdge->remove();
         delete m_DragEdge;
         m_DragEdge = nullptr;
+
 
         return false;
     }
@@ -301,6 +329,7 @@ private:
     NodeScene* m_Scene;
     //------------------------------
     NodeEdge* m_DragEdge = nullptr;
+    NodeEdge* m_PreviousEdge = nullptr;
     Socket* m_LastStartSocket = nullptr;
     GraphicsCutLine* m_Cutline = nullptr;
     QPointF m_NodeOldPos;

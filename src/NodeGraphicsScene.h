@@ -8,6 +8,7 @@
 
 class NodeGraphicsScene : public QGraphicsScene
 {
+    Q_OBJECT
 public:
     NodeGraphicsScene();
     ~NodeGraphicsScene();
@@ -19,12 +20,18 @@ public:
 
     void keyPressEvent(QKeyEvent* event) override
     {
-        if (event->key() == Qt::Key_Z && event->modifiers() & Qt::ControlModifier)
-            undoStack->undo();
+        undoStack->undo();
 
         if (event->key() == Qt::Key_U && event->modifiers() & Qt::ControlModifier)
             undoStack->redo();
     }
+
+public slots:
+    void OnClipboardChanged();
+
+    //void OnCopy();
+    //void OnPaste();
+    //void OnCut();
 
 private:
     QColor m_BGColor;

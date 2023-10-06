@@ -9,8 +9,9 @@ public:
     GraphicsCutLine(QGraphicsItem* parent = nullptr);
     ~GraphicsCutLine() {}
 
-    QRectF boundingRect() const override { return QRectF(0, 0, 1, 1); }
+    QRectF boundingRect() const override { return shape().boundingRect(); }
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+    QPainterPath shape() const override;
 
     inline void clearLinePoints() { linePoints.clear(); }
     inline QVector<QPoint> getLinePoints() { return linePoints; }

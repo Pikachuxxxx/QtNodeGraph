@@ -84,7 +84,7 @@ QPointF Node::getSocketPosition(uint32_t index, SocketPos pos)
 
 void Node::remove()
 {
-    scene->getUndoStack()->push(new RemoveNodeCommand(scene->getGraphicsScene()));
+    //scene->getUndoStack()->push(new RemoveNodeCommand(scene->getGraphicsScene()));
 
     for (auto input : inputs) {
         if (input->hasEdge())
@@ -133,16 +133,16 @@ AddNodeCommand::AddNodeCommand(Node* node, QGraphicsScene* scene)
 
 void AddNodeCommand::undo()
 {
-    mNode->remove();
-    mGraphicsScene->update();
+    //mNode->remove();
+    //mGraphicsScene->update();
 }
 
 void AddNodeCommand::redo()
 {
-    mNode->add();
-    mNode->setPos(mInitialPosition.x(), mInitialPosition.y());
-    mGraphicsScene->clearSelection();
-    mGraphicsScene->update();
+    //mNode->add();
+    //mNode->setPos(mInitialPosition.x(), mInitialPosition.y());
+    //mGraphicsScene->clearSelection();
+    //mGraphicsScene->update();
 }
 
 RemoveNodeCommand::RemoveNodeCommand(QGraphicsScene* scene)
