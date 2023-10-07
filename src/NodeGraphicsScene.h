@@ -48,5 +48,5 @@ private:
     uint32_t m_GridSquares = 5;
 
     QUndoStack* undoStack = nullptr;
-    QUndoView* undoView = nullptr;
+    //QUndoView* undoView = nullptr;
 };

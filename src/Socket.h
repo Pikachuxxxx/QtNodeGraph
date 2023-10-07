@@ -22,8 +22,8 @@ enum SocketPos
 
 enum SocketType
 {
-    INPUT,
-    OUTPUT
+    SOCKET_INPUT,
+    SOCKET_OUTPUT
 };
 
 class Socket

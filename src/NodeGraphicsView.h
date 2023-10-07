@@ -2,19 +2,19 @@
 
 #include <iostream>
 
-#include <QObject>
+#include <QApplication>
 #include <QGraphicsView>
 #include <QMouseEvent>
-#include <QApplication>
+#include <QObject>
 
-#include "GraphicsSocket.h"
-#include "Socket.h"
-#include "NodeEdge.h"
-#include "GraphicsEdge.h"
-#include "NodeScene.h"
 #include "GraphicsCutLine.h"
+#include "GraphicsEdge.h"
 #include "GraphicsNode.h"
+#include "GraphicsSocket.h"
 #include "Node.h"
+#include "NodeEdge.h"
+#include "NodeScene.h"
+#include "Socket.h"
 
 class NodeScene;
 class Socket;
@@ -34,16 +34,32 @@ enum class DRAG_MODE
     EDGE_REROUTE
 };
 
-constexpr uint32_t EDGE_DRAG_THRESHOLD = 10; // pixels
+constexpr uint32_t EDGE_DRAG_THRESHOLD = 10;    // pixels
 
 class NodeGraphicsView : public QGraphicsView
 {
 public:
-    NodeGraphicsView(NodeScene* scene, QWidget* parent = nullptr);
+    NodeGraphicsView(QWidget* parent = nullptr);
     ~NodeGraphicsView() {}
 
+    void init(NodeScene* scene);
+    void setNodeScene(NodeScene* scene);
+
+protected:
+    virtual void OnKeyPressEvent(QKeyEvent* e) {}
+    virtual void OnLeftMousePress(QMouseEvent* event) {}
+    virtual void OnMiddleMousePress(QMouseEvent* event) {}
+    virtual void OnRightMousePress(QMouseEvent* event) {}
+    virtual void OnLeftMouseRelease(QMouseEvent* event) {}
+    virtual void OnMiddleMouseRelease(QMouseEvent* event) {}
+    virtual void OnRightMouseRelease(QMouseEvent* event) {}
+
+    QPoint m_MousePosition;
+
+private:
     void keyPressEvent(QKeyEvent* e) override
     {
+        OnKeyPressEvent(e);
         // Escape is used to stop dragging edge
         if (e->key() == Qt::Key_Escape) {
             if (m_Mode == DRAG_MODE::EDGE_DRAG) {
@@ -59,13 +75,7 @@ public:
         // Delete is used for deleting selected items (nodes and edges)
         else if (e->key() == Qt::Key_Delete) {
             deleteSelected();
-        }
-        else if (e->key() == Qt::Key_C)
-        {
-            auto& items = m_Scene->getGraphicsScene()->items();
-            std::cout << "Items count : " << items.count() << std::endl;
-        }
-        else
+        } else
             QGraphicsView::keyPressEvent(e);
     }
 
@@ -78,35 +88,31 @@ public:
 
         if (event->button() == Qt::LeftButton) {
             leftMousePress(event);
-        }
-        else if (event->button() == Qt::RightButton) {
+        } else if (event->button() == Qt::RightButton) {
             rightMousePress(event);
-        }
-        else if (event->button() == Qt::MiddleButton) {
+        } else if (event->button() == Qt::MiddleButton) {
             middleMousePress(event);
-        }
-        else
+        } else
             QGraphicsView::mousePressEvent(event);
-
     }
 
     void mouseReleaseEvent(QMouseEvent* event) override
     {
         if (event->button() == Qt::LeftButton) {
             leftMouseRelease(event);
-        }
-        else if (event->button() == Qt::RightButton) {
+        } else if (event->button() == Qt::RightButton) {
             rightMouseRelease(event);
-        }
-        else if (event->button() == Qt::MiddleButton) {
+        } else if (event->button() == Qt::MiddleButton) {
             middleMouseRelease(event);
-        }
-        else
+        } else
             QGraphicsView::mouseReleaseEvent(event);
     }
 
     void mouseMoveEvent(QMouseEvent* event) override
     {
+        //m_MousePosition = QPoint(mapToScene(event->pos()).x(), mapToScene(event->pos()).y());
+        m_MousePosition = QPoint(event->pos().x(), event->pos().y());
+
         if (m_Mode == DRAG_MODE::EDGE_DRAG) {
             auto pos = mapToScene(event->pos());
             m_DragEdge->getGraphicsEdge()->setDestPos(pos);
@@ -134,19 +140,17 @@ public:
         if (event->angleDelta().y() > 0) {
             zoomFactor = zoomInFactor;
             zoom += zoomStep;
-        }
-        else {
+        } else {
             zoomFactor = zoomOutFactor;
             zoom -= zoomStep;
         }
 
         bool clamped = false;
         if (zoom < zoomRangeMin) {
-            zoom = zoomRangeMin;
+            zoom    = zoomRangeMin;
             clamped = true;
-        }
-        else if (zoom > zoomRangeMax) {
-            zoom = zoomRangeMax;
+        } else if (zoom > zoomRangeMax) {
+            zoom    = zoomRangeMax;
             clamped = true;
         }
 
@@ -156,12 +160,13 @@ public:
 
     void leftMousePress(QMouseEvent* event)
     {
+        OnLeftMousePress(event);
+
         auto item = itemAt(event->pos());
 
         m_lastLMBClickScenePos = mapToScene(event->pos());
 
-        if (dynamic_cast<GraphicsSocket*>(item))
-        {
+        if (dynamic_cast<GraphicsSocket*>(item)) {
             std::cout << "[Node Graphics View] Socket was clicked!" << std::endl;
             if (m_Mode == DRAG_MODE::NO_OP) {
                 // Draw an edge here
@@ -193,6 +198,7 @@ public:
 
     void rightMousePress(QMouseEvent* event)
     {
+        OnRightMousePress(event);
         //QApplication::restoreOverrideCursor();
         //QApplication::setOverrideCursor(Qt::ArrowCursor);
 
@@ -206,11 +212,13 @@ public:
 
     void middleMousePress(QMouseEvent* event)
     {
-
+        OnMiddleMousePress(event);
     }
 
     void leftMouseRelease(QMouseEvent* event)
     {
+        OnLeftMouseRelease(event);
+
         auto item = itemAt(event->pos());
 
         // Works for a continuous drag of mouse and released on the socket (2nd type of drawing edges from socket)
@@ -218,7 +226,7 @@ public:
         // in this case socket press won't work as well as release will cause edgeDragEnd
         if (m_Mode == DRAG_MODE::EDGE_DRAG) {
             auto m_newLMBReleaseScenePos = mapToScene(event->pos());
-            auto dist = m_newLMBReleaseScenePos - m_lastLMBClickScenePos;
+            auto dist                    = m_newLMBReleaseScenePos - m_lastLMBClickScenePos;
             if (dist.x() * dist.x() + dist.y() * dist.y() > EDGE_DRAG_THRESHOLD * EDGE_DRAG_THRESHOLD) {
                 if (edgeDragEnd(dynamic_cast<GraphicsSocket*>(item)))
                     return;
@@ -241,6 +249,8 @@ public:
 
     void rightMouseRelease(QMouseEvent* event)
     {
+        OnRightMouseRelease(event);
+
         // Panning the canvas using RMB
         auto fakeEvent = new QMouseEvent(event->type(), event->localPos(), event->screenPos(), Qt::LeftButton, event->buttons() & ~Qt::LeftButton, event->modifiers());
         setDragMode(QGraphicsView::NoDrag);
@@ -249,7 +259,7 @@ public:
 
     void middleMouseRelease(QMouseEvent* event)
     {
-
+        OnMiddleMouseRelease(event);
     }
 
     void edgeDragStart(GraphicsSocket* grSocket)
@@ -273,17 +283,14 @@ public:
         delete m_DragEdge;
         m_DragEdge = nullptr;
 
-        if (grSocket)
-        {
+        if (grSocket) {
             auto endSocket = grSocket->getSocket();
             if (endSocket != m_DragStartSocket) {
-
                 std::cout << "\t assign end socket" << std::endl;
 
                 // If the previous socket is null, the final socked might have a previous edge so mark that as previous edge
                 //if (!m_PreviousEdge)
                 //    m_PreviousEdge = grSocket->getSocket()->getConnectedEdge();
-
 
                 // Also even if we have previous edge the current socket can have a edge already so remove that too
                 //if (grSocket->getSocket()->hasEdges())
@@ -298,13 +305,13 @@ public:
 
                 // TESTING: Single edge mode
                 if (!endSocket->supportsMultiEdges()) {
-                    for (auto edge : endSocket->getEdges()) {
+                    for (auto edge: endSocket->getEdges()) {
                         edge->remove();
                     }
                 }
 
                 if (!m_DragStartSocket->supportsMultiEdges()) {
-                    for (auto edge : m_DragStartSocket->getEdges()) {
+                    for (auto edge: m_DragStartSocket->getEdges()) {
                         edge->remove();
                     }
                 }
@@ -330,18 +337,18 @@ public:
     void cutIntersectingEdges();
 
 private:
-    float zoomInFactor = 1.25f;
-    float zoom = 10.0f;
-    float zoomStep = 1.0f;
-    float zoomRangeMin = 0.0f;
-    float zoomRangeMax = 10.0f;
-    float zoomFactor = 1.0f;
-    DRAG_MODE m_Mode = DRAG_MODE::NO_OP;
-    QPointF m_lastLMBClickScenePos;
+    float      zoomInFactor = 1.25f;
+    float      zoom         = 10.0f;
+    float      zoomStep     = 1.0f;
+    float      zoomRangeMin = 0.0f;
+    float      zoomRangeMax = 10.0f;
+    float      zoomFactor   = 1.0f;
+    DRAG_MODE  m_Mode       = DRAG_MODE::NO_OP;
+    QPointF    m_lastLMBClickScenePos;
     NodeScene* m_Scene;
     //------------------------------
     NodeEdge* m_DragEdge = nullptr;
     //NodeEdge* m_PreviousEdge = nullptr;
-    Socket* m_DragStartSocket = nullptr;
-    GraphicsCutLine* m_Cutline = nullptr;
+    Socket*          m_DragStartSocket = nullptr;
+    GraphicsCutLine* m_Cutline         = nullptr;
 };

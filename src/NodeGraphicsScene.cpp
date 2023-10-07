@@ -25,9 +25,9 @@ NodeGraphicsScene::NodeGraphicsScene()
     setBackgroundBrush(m_BGColor);
 
     undoStack = new QUndoStack(this);
-    undoView = new QUndoView(undoStack);
+    //undoView = new QUndoView(undoStack);
 
-    undoView->show();
+    //undoView->show();
 
     setItemIndexMethod(QGraphicsScene::NoIndex);
 

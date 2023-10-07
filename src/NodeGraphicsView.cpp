@@ -1,12 +1,18 @@
 #include "NodeGraphicsView.h"
 
-#include "NodeScene.h"
 #include "GraphicsNode.h"
 #include "Node.h"
+#include "NodeScene.h"
 
-NodeGraphicsView::NodeGraphicsView(NodeScene* scene, QWidget* parent)
-    :QGraphicsView(parent), m_Scene(scene)
+NodeGraphicsView::NodeGraphicsView(QWidget* parent)
+    : QGraphicsView(parent)
 {
+}
+
+void NodeGraphicsView::init(NodeScene* scene)
+{
+    m_Scene = scene;
+
     setScene(scene->getGraphicsScene());
 
     setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
@@ -30,11 +36,16 @@ NodeGraphicsView::NodeGraphicsView(NodeScene* scene, QWidget* parent)
     auto bbr = m_Cutline->boundingRect();
 }
 
+void NodeGraphicsView::setNodeScene(NodeScene* scene)
+{
+    m_Scene = scene;
+    setScene(m_Scene->getGraphicsScene());
+}
+
 void NodeGraphicsView::deleteSelected()
 {
     auto& selectedItems = m_Scene->getGraphicsScene()->selectedItems();
     for each (auto item in m_Scene->getGraphicsScene()->selectedItems()) {
-
         if (!item)
             return;
 
@@ -45,8 +56,7 @@ void NodeGraphicsView::deleteSelected()
             dynamic_cast<GraphicsEdge*>(item)->getEdge()->remove();
             selectedItems.erase(std::remove(selectedItems.begin(), selectedItems.end(), item), selectedItems.end());
             item = nullptr;
-        }
-        else if (dynamic_cast<GraphicsNode*>(item)) {
+        } else if (dynamic_cast<GraphicsNode*>(item)) {
             //dynamic_cast<GraphicsNode*>(item)->getNode()->remove();
             m_Scene->getUndoStack()->push(new RemoveNodeCommand(m_Scene->getGraphicsScene()));
             selectedItems.erase(std::remove(selectedItems.begin(), selectedItems.end(), item), selectedItems.end());
@@ -57,5 +67,4 @@ void NodeGraphicsView::deleteSelected()
 
 void NodeGraphicsView::cutIntersectingEdges()
 {
-
 }
