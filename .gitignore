@@ -4,6 +4,10 @@ bin/
 bin-int/
 build/
 
+# QT generated Files
+src/generated/**
+src/generated/
+
 # Visual Studio Project Files
 *.sln
 *.vcxproj
