@@ -14,8 +14,10 @@ enum SocketPos
 {
     LEFT_TOP,
     LEFT_BOTTOM,
+    LEFT_CENTER, // Support this
     RIGHT_TOP,
     RIGHT_BOTTOM,
+    RIGHT_CENTER // Support this
 };
 
 enum SocketType

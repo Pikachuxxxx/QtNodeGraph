@@ -19,6 +19,18 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
+    void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override
+    {
+        hovered = true;
+        update();
+    }
+
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent* event) override
+    {
+        hovered = false;
+        update();
+    }
+
     QRectF boundingRect() const override { return QRectF(0, 0, width, height).normalized(); }
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 
@@ -41,8 +53,9 @@ private:
     uint32_t padding = 5;
     QPen penDefault;
     QPen penSelected;
+    QPen penHovered;
     QBrush titleBrush;
     QBrush bgBrush;
     QPointF m_NodeOldPos;
-
+    bool hovered = false;
 };

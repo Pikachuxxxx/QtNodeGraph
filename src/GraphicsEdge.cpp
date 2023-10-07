@@ -19,13 +19,17 @@ GraphicsEdge::GraphicsEdge(NodeEdge* edge, QGraphicsItem* parent)
     this->setFlags(QGraphicsItem::ItemIsSelectable);
     pathPen = QPen("#FFFFFF");
     pathDragPen = QPen("#000000");
+    penHovered = QPen("#FF37A6FF");
     pathDragPen.setStyle(Qt::DashLine);
     penSelected = QPen("#FFFFA637");
     pathPen.setWidthF(2.5f);
     penSelected.setWidthF(2.5f);
-    pathDragPen.setWidthF(2.0f);
+    pathDragPen.setWidthF(2.5f);
+    penHovered.setWidth(5.0f);
 
     this->setZValue(-1);
+
+    setAcceptHoverEvents(true);
 
     // Initialize dest position with source position
     auto sourcePos = edge->getStartSocket()->getPos();
@@ -86,6 +90,12 @@ void GraphicsEdge::paint(QPainter* painter, const QStyleOptionGraphicsItem* opti
         return;
 
     updatePath();
+
+    if (hovered && edge->getEndSocket()) {
+
+        painter->setPen(penHovered);
+        painter->drawPath(path);
+    }
 
     if (edge->getEndSocket()) {
         if (!isSelected())

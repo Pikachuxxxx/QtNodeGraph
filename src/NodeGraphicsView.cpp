@@ -20,6 +20,9 @@ NodeGraphicsView::NodeGraphicsView(NodeScene* scene, QWidget* parent)
     // Enable selection using mouse
     setDragMode(QGraphicsView::RubberBandDrag);
 
+    // End DragnDrop
+    setAcceptDrops(true);
+
     m_Cutline = new GraphicsCutLine();
     scene->getGraphicsScene()->addItem(m_Cutline);
     //m_Cutline->setPos(scene->getOrigin());

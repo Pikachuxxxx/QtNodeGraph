@@ -19,14 +19,28 @@ public:
 
     void setDestPos(QPointF pos) { destPos = pos; updatePath(); }
 
+    void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override
+    {
+        hovered = true;
+        update();
+    }
+
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent* event) override
+    {
+        hovered = false;
+        update();
+    }
+
     inline NodeEdge* getEdge() { return edge; }
 protected:
     NodeEdge* edge;
     QPen pathPen;
     QPen pathDragPen;
     QPen penSelected;
+    QPen penHovered;
     QPainterPath path;
     QPointF destPos;
+    bool hovered = false;
 
 };
 

@@ -21,6 +21,8 @@ GraphicsNode::GraphicsNode(Node* node)
     titleItem->setDefaultTextColor(Qt::white);
     titleItem->setTextWidth(width - 2 * padding);
     titleItem->setPos(padding, 0);
+    penHovered = QPen("#FF37A6FF");
+    penHovered.setWidth(6.0f);
 
     penDefault = QPen(QColor("#7f000000")); // ARGB E5FA96
     // florescent green - RGB
@@ -33,6 +35,7 @@ GraphicsNode::GraphicsNode(Node* node)
     //titleBrush = QBrush(QColor("#FFB9F027"));
     bgBrush = QBrush(QColor("#E3212121"));
     //bgBrush = QBrush(QColor("#FF84AD18"));
+    setAcceptHoverEvents(true);
 
     initSockets();
 
@@ -92,10 +95,16 @@ void GraphicsNode::paint(QPainter* painter, const QStyleOptionGraphicsItem* opti
     // Outline
     auto path_outline = QPainterPath();
     path_outline.addRoundedRect(0, 0, width, height, edge_size, edge_size);
+    painter->setBrush(Qt::NoBrush);
+    if (hovered) {
+        painter->setPen(penHovered);
+        painter->drawPath(path_outline.simplified());
+    }
+
     if (!isSelected())
         painter->setPen(penDefault);
     else
         painter->setPen(penSelected);
-    painter->setBrush(Qt::NoBrush);
     painter->drawPath(path_outline.simplified());
+
 }
