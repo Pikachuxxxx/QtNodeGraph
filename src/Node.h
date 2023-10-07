@@ -36,9 +36,9 @@ public:
     inline Socket* getOutputSocket(uint32_t idx) { return outputs[idx]; }
 
 private:
-    NodeScene* scene;
+    NodeScene* scene = nullptr;
     std::string title;
-    GraphicsNode* graphicsNode;
+    GraphicsNode* graphicsNode = nullptr;
     NodeContentWidget* nodeContent;
     std::vector<Socket*> inputs;
     std::vector<Socket*> outputs;
@@ -57,8 +57,8 @@ public:
     void redo() override;
 
 private:
-    Node* mNode;
-    QGraphicsScene* mGraphicsScene;
+    Node* mNode = nullptr;
+    QGraphicsScene* mGraphicsScene = nullptr;
     QPointF mInitialPosition;
 };
 
@@ -71,8 +71,8 @@ public:
     void redo() override;
 
 private:
-    Node* mNode;
-    QGraphicsScene* mGraphicsScene;
+    Node* mNode = nullptr;
+    QGraphicsScene* mGraphicsScene = nullptr;
     QPointF mInitialPosition;
 };
 
@@ -86,8 +86,8 @@ public:
     bool mergeWith(const QUndoCommand* other) override;
 
 private:
-    Node* mNode;
-    QGraphicsScene* mGraphicsScene;
+    Node* mNode = nullptr;
+    QGraphicsScene* mGraphicsScene = nullptr;
     QPointF mOldPosition;
     QPointF mNewPosition;
 };

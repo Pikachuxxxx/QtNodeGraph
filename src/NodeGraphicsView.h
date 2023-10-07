@@ -30,7 +30,8 @@ enum class DRAG_MODE
 {
     NO_OP,
     EDGE_DRAG,
-    EDGE_CUT
+    EDGE_CUT,
+    EDGE_REROUTE
 };
 
 constexpr uint32_t EDGE_DRAG_THRESHOLD = 10; // pixels
@@ -169,22 +170,23 @@ public:
                 return;
             }
         }
+
         if (m_Mode == DRAG_MODE::EDGE_DRAG) {
             if (edgeDragEnd(dynamic_cast<GraphicsSocket*>(item)))
                 return;
         }
 
         // Cut edges using cut line
-        if (!item) {
-            if (event->modifiers() & Qt::ControlModifier) {
-                m_Mode = DRAG_MODE::EDGE_CUT;
-                setDragMode(QGraphicsView::NoDrag);
-                QApplication::setOverrideCursor(Qt::CrossCursor);
-                auto fakeEvent = new QMouseEvent(QEvent::MouseButtonRelease, event->localPos(), event->screenPos(), Qt::LeftButton, Qt::NoButton, event->modifiers());
-                QGraphicsView::mousePressEvent(fakeEvent);
-                return;
-            }
-        }
+        //if (!item) {
+        //    if (event->modifiers() & Qt::ControlModifier) {
+        //        m_Mode = DRAG_MODE::EDGE_CUT;
+        //        setDragMode(QGraphicsView::NoDrag);
+        //        QApplication::setOverrideCursor(Qt::CrossCursor);
+        //        auto fakeEvent = new QMouseEvent(QEvent::MouseButtonRelease, event->localPos(), event->screenPos(), Qt::LeftButton, Qt::NoButton, event->modifiers());
+        //        QGraphicsView::mousePressEvent(fakeEvent);
+        //        return;
+        //    }
+        //}
 
         QGraphicsView::mousePressEvent(event);
     }

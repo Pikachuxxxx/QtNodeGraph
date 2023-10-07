@@ -15,6 +15,9 @@ GraphicsSocket::GraphicsSocket(Socket* socket, std::string colorHex)
     pen = QPen(outlineColor);
     pen.setWidthF(outlineWidth);
 
+    penHovered = QPen("#FF37A6FF");
+    penHovered.setWidthF(outlineWidth * 2.0f);
+
     brush = QBrush(bgColor);
 
     this->setZValue(5);
@@ -24,6 +27,12 @@ void GraphicsSocket::paint(QPainter* painter, const QStyleOptionGraphicsItem* op
 {
     // Painting circle
     painter->setBrush(brush);
+
+    if (hover) {
+        painter->setPen(penHovered);
+        painter->drawEllipse(-radius, -radius, 2 * radius, 2 * radius);
+    }
+
     painter->setPen(pen);
     painter->drawEllipse(-radius, -radius, 2 * radius, 2 * radius);
     // painter->drawRect(-radius, -radius, 2 * radius, 2 * radius);

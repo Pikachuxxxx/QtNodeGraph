@@ -65,7 +65,8 @@ void NodeEdge::remove()
     //grEdge->~GraphicsEdge();
     //m_Scene->getGraphicsScene()->removeItem(grEdge);
 
-    delete grEdge;
+    
+    delete static_cast<QGraphicsItem*>(grEdge);
     grEdge = nullptr;
     removeFromSockets();
     m_Scene->removeEdge(this);

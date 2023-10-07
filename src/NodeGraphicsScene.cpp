@@ -29,6 +29,8 @@ NodeGraphicsScene::NodeGraphicsScene()
 
     undoView->show();
 
+    setItemIndexMethod(QGraphicsScene::NoIndex);
+
     connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(OnClipboardChanged()));
 }
 

@@ -19,7 +19,7 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override
     {
         std::cout << "Socket Pressed" << std::endl;
-         
+
         QGraphicsItem::mousePressEvent(event);
     }
 
@@ -42,5 +42,7 @@ private:
     QColor bgColor;
     QColor outlineColor;
     QPen pen;
+    QPen penHovered;
     QBrush brush;
+    bool hover = false;
 };
