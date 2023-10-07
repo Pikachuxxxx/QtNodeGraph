@@ -23,7 +23,7 @@ class Socket;
 // [x] 14    : Deleting Edges (bugs, deleting multiple sometimes causes crash)
 // [x] 15    : Cutting edges (paint won't work for GraphicsCutEdge, check the bounding rect of GraphicsCutEdge)
 // [x] 19/20 : Undo/Redo Working add more features in Beta
-// [] 22/23  : Cut/Copy/Paste (Razix Beta release) Needs Node serialization/Deserialization API for this to work so deferred until that
+// [o] 22/23 : Cut/Copy/Paste (Razix Beta release) Needs Node serialization/De serialization API for this to work so deferred until that
 // [-] 25    : File has changed (Razix Beta release, implemented in razix itself not in this project!)
 
 enum class DRAG_MODE
@@ -256,8 +256,8 @@ public:
         std::cout << "Start dragging edge" << std::endl;
         std::cout << "\t assign start socket" << std::endl;
 
-        m_LastStartSocket = grSocket->getSocket();
-        m_PreviousEdge = m_LastStartSocket->getConnectedEdge();
+        m_DragStartSocket = grSocket->getSocket();
+        //m_PreviousEdge = m_DragStartSocket->getConnectedEdge();
     }
 
     // TODO: Add option for user to use single edge input/output nodes
@@ -266,43 +266,60 @@ public:
     {
         m_Mode = DRAG_MODE::NO_OP;
         std::cout << "End dragging edge" << std::endl;
-
-        if (grSocket)
-        {
-            if (grSocket->getSocket() != m_LastStartSocket) {
-
-                // If the previous socket is null, the final socked might have a previous edge so mark that as previous edge
-                if (!m_PreviousEdge)
-                    m_PreviousEdge = grSocket->getSocket()->getConnectedEdge();
-
-                std::cout << "\t assign end socket" << std::endl;
-
-                // Also even if we have previous edge the current socket can have a edge already so remove that too
-                if (grSocket->getSocket()->hasEdge())
-                    grSocket->getSocket()->getConnectedEdge()->remove();
-
-
-                // Delete old edge
-                if (m_PreviousEdge) {
-                    m_PreviousEdge->remove();
-                    delete m_PreviousEdge;
-                    m_PreviousEdge = nullptr;
-                }
-
-                m_DragEdge->setStartSocket(m_LastStartSocket);
-                m_DragEdge->setEndSocket(grSocket->getSocket());
-                m_DragEdge->getStartSocket()->setConnectedEdge(m_DragEdge);
-                m_DragEdge->getEndSocket()->setConnectedEdge(m_DragEdge);
-                m_DragEdge->getGraphicsEdge()->update();
-                return true;
-            }
-        }
-
-        // If it's not a socket end the m_DragEdge
+        // Since we are done with it delete and remove it first
         m_DragEdge->remove();
         delete m_DragEdge;
         m_DragEdge = nullptr;
 
+        if (grSocket)
+        {
+            auto endSocket = grSocket->getSocket();
+            if (endSocket != m_DragStartSocket) {
+
+                std::cout << "\t assign end socket" << std::endl;
+
+                // If the previous socket is null, the final socked might have a previous edge so mark that as previous edge
+                //if (!m_PreviousEdge)
+                //    m_PreviousEdge = grSocket->getSocket()->getConnectedEdge();
+
+
+                // Also even if we have previous edge the current socket can have a edge already so remove that too
+                //if (grSocket->getSocket()->hasEdges())
+                //    grSocket->getSocket()->getConnectedEdge()->remove();
+
+                // Delete old edge
+                //if (m_PreviousEdge) {
+                //    m_PreviousEdge->remove();
+                //    delete m_PreviousEdge;
+                //    m_PreviousEdge = nullptr;
+                //}
+
+                // TESTING: Single edge mode
+                if (!endSocket->supportsMultiEdges()) {
+                    for (auto edge : endSocket->getEdges()) {
+                        edge->remove();
+                    }
+                }
+
+                if (!m_DragStartSocket->supportsMultiEdges()) {
+                    for (auto edge : m_DragStartSocket->getEdges()) {
+                        edge->remove();
+                    }
+                }
+
+                //m_DragEdge->setStartSocket(m_DragStartSocket);
+                //m_DragEdge->setEndSocket(grSocket->getSocket());
+                //m_DragEdge->getStartSocket()->addEdge(m_DragEdge);
+                //m_DragEdge->getEndSocket()->addEdge(m_DragEdge);
+                //m_DragEdge->getGraphicsEdge()->update();
+
+                // Also create a new edge only if there isn't an existing edge from start to end socket
+
+                auto newEdge = new NodeEdge(m_Scene, m_DragStartSocket, endSocket, BEZIER);
+
+                return true;
+            }
+        }
 
         return false;
     }
@@ -322,7 +339,7 @@ private:
     NodeScene* m_Scene;
     //------------------------------
     NodeEdge* m_DragEdge = nullptr;
-    NodeEdge* m_PreviousEdge = nullptr;
-    Socket* m_LastStartSocket = nullptr;
+    //NodeEdge* m_PreviousEdge = nullptr;
+    Socket* m_DragStartSocket = nullptr;
     GraphicsCutLine* m_Cutline = nullptr;
 };

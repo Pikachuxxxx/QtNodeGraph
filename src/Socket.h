@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include <QPointF>
 
@@ -26,24 +27,28 @@ enum SocketType
 class Socket
 {
 public:
-    Socket(Node* node, uint32_t index = 0, SocketPos position = LEFT_TOP, std::string colorHex = "#FFFF7700", const std::string& name = "socket_name");
+    Socket(Node* node, uint32_t index = 0, SocketPos position = LEFT_TOP, bool multiEdges = true, std::string colorHex = "#FFFF7700", const std::string& name = "socket_name");
     ~Socket() {}
 
     QPointF getPos();
     inline SocketPos getSocketPos() { return position; }
-    inline bool hasEdge() { return edge ? true : false; }
-    inline NodeEdge* getEdge() { return edge; }
-    inline void setConnectedEdge(NodeEdge* edge) { this->edge = edge; }
-    inline NodeEdge* getConnectedEdge() { return edge; }
     inline Node* getNode() { return node; }
     inline const std::string& getSocketName() { return name; }
 
+    inline bool hasEdges() { return edges.size() > 0 ? true : false; }
+    inline void addEdge(NodeEdge* edge) { edges.push_back(edge); }
+    void removeEdges();
+    void removeEdge(NodeEdge* edge);
+    inline std::vector<NodeEdge*> getEdges() { return edges; }
+    inline bool supportsMultiEdges() { return m_SupportsMultipleEdges; }
+
 private:
     Node* node = nullptr;
-    NodeEdge* edge = nullptr; // Denotes the edge to which this socket is connected
+    std::vector<NodeEdge*> edges = {}; // Denotes the edges to which this socket is connected
     uint32_t index;
     SocketPos position;
     SocketType type;
     GraphicsSocket* grSocket = nullptr;
     std::string name;
+    bool m_SupportsMultipleEdges = true;
 };

@@ -18,26 +18,34 @@ NodeEdge::NodeEdge(NodeScene* scene, Socket* startSocket, Socket* endSocket, Edg
     scene->getGraphicsScene()->addItem(grEdge);
 
     if (startSocket)
-        startSocket->setConnectedEdge(this);
+        startSocket->addEdge(this);
 
     if (endSocket)
-        endSocket->setConnectedEdge(this);
+        endSocket->addEdge(this);
 }
 
 void NodeEdge::setStartSocket(Socket* socket)
 {
+    // Remove existing node for the existing socket
+    if (startSocket)
+        startSocket->removeEdge(this);
+
     startSocket = socket;
-    startSocket->setConnectedEdge(this);
-    grEdge = socket->getConnectedEdge()->grEdge;
+    startSocket->addEdge(this);
+    //grEdge = socket->getConnectedEdge()->grEdge;
     if (grEdge)
         grEdge->updatePath();
 
 }
 void NodeEdge::setEndSocket(Socket* socket)
 {
+    // Remove existing node for the existing socket
+    if (endSocket)
+        endSocket->removeEdge(this);
+
     endSocket = socket;
-    endSocket->setConnectedEdge(this);
-    grEdge = socket->getConnectedEdge()->grEdge;
+    endSocket->addEdge(this);
+    //grEdge = socket->getConnectedEdge()->grEdge;
     if (grEdge)
         grEdge->updatePath();
 }
@@ -45,9 +53,9 @@ void NodeEdge::setEndSocket(Socket* socket)
 void NodeEdge::removeFromSockets()
 {
     if (startSocket)
-        startSocket->setConnectedEdge(nullptr);
+        startSocket->removeEdge(this);
     if (endSocket)
-        endSocket->setConnectedEdge(nullptr);
+        endSocket->removeEdge(this);
     startSocket = nullptr;
     endSocket = nullptr;
 }
@@ -74,10 +82,10 @@ void NodeEdge::add()
     m_Scene->getGraphicsScene()->addItem(grEdge);
 
     if (startSocket)
-        startSocket->setConnectedEdge(this);
+        startSocket->addEdge(this);
 
     if (endSocket)
-        endSocket->setConnectedEdge(this);
+        endSocket->addEdge(this);
 }
 
 void NodeEdge::select()

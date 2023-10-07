@@ -12,7 +12,8 @@ void NodeScene::addNode(Node* node)
 
 void NodeScene::removeNode(Node* node)
 {
-    m_Nodes.erase(std::remove(m_Nodes.begin(), m_Nodes.end(), node), m_Nodes.end());
+    if (std::find(m_Nodes.begin(), m_Nodes.end(), node) != m_Nodes.end())
+        m_Nodes.erase(std::remove(m_Nodes.begin(), m_Nodes.end(), node), m_Nodes.end());
 }
 
 void NodeScene::addEdge(NodeEdge* edge)
@@ -22,5 +23,6 @@ void NodeScene::addEdge(NodeEdge* edge)
 
 void NodeScene::removeEdge(NodeEdge* edge)
 {
-    m_Edges.erase(std::remove(m_Edges.begin(), m_Edges.end(), edge), m_Edges.end());
+    if (std::find(m_Edges.begin(), m_Edges.end(), edge) != m_Edges.end())
+        m_Edges.erase(std::remove(m_Edges.begin(), m_Edges.end(), edge), m_Edges.end());
 }

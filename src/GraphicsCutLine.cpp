@@ -25,11 +25,14 @@ void GraphicsCutLine::paint(QPainter* painter, const QStyleOptionGraphicsItem* o
 QPainterPath GraphicsCutLine::shape() const
 {
     QPainterPath path;
-
     if (linePoints.size() > 1) {
         path = QPainterPath(linePoints[0]);
         for (auto line : linePoints)
             path.lineTo(line);
+    }
+    else {
+        path = QPainterPath(QPointF(0, 0));
+        path.lineTo(QPointF(1, 1));
     }
 
     return path;

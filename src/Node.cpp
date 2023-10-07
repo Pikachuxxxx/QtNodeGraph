@@ -37,12 +37,12 @@ Node::Node(NodeScene* scene, std::string nodeName, std::vector<std::string> inpu
     scene->getGraphicsScene()->addItem(graphicsNode);
 
     for (size_t i = 0; i < inputsCount.size(); i++) {
-        auto socket = new Socket(this, i, LEFT_BOTTOM, inputsCount[i]);
+        auto socket = new Socket(this, i, LEFT_BOTTOM, false, inputsCount[i]);
         inputs.push_back(socket);
     }
 
     for (size_t i = 0; i < outputsCount.size(); i++) {
-        auto socket = new Socket(this, i, RIGHT_TOP, outputsCount[i]);
+        auto socket = new Socket(this, i, RIGHT_TOP, true, outputsCount[i]);
         outputs.push_back(socket);
     }
 }
@@ -81,15 +81,15 @@ QPointF Node::getSocketPosition(uint32_t index, SocketPos pos)
 void Node::remove()
 {
     for (auto input : inputs) {
-        if (input->hasEdge())
-            input->getEdge()->remove();
+        for (auto edge : input->getEdges())
+            edge->remove();
     }
 
     for (auto output : outputs) {
-        if (output->hasEdge())
-            output->getEdge()->remove();
+        for (auto edge : output->getEdges())
+            edge->remove();
     }
-    // Doing remove item instead of delete noice
+    // Doing remove item instead of delete
     //graphicsNode->~GraphicsNode();
     //scene->getGraphicsScene()->removeItem(graphicsNode);
     delete graphicsNode;
@@ -99,15 +99,17 @@ void Node::remove()
 
 void Node::add()
 {
+#if 0
     for (auto input : inputs) {
-        if (input->hasEdge())
+        if (input->hasEdges())
             input->getEdge()->add();
     }
 
     for (auto output : outputs) {
-        if (output->hasEdge())
+        if (output->hasEdges())
             output->getEdge()->add();
     }
+#endif
 
     //for (size_t i = 0; i < inputs.size(); i++) {
     //    auto socket = new Socket(this, i, LEFT_BOTTOM, inputs[i]);
