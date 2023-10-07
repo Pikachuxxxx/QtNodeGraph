@@ -69,6 +69,7 @@ class NodeEditor : public NodeGraphWidget
 {
 public:
     NodeEditor()
+        : NodeGraphWidget()
     {}
     ~NodeEditor(){}
 };
