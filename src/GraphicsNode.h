@@ -5,6 +5,7 @@
 #include <QPen>
 
 class Node;
+class MoveNodeCommand;
 
 class GraphicsNode : public QGraphicsItem
 {
@@ -14,6 +15,9 @@ public:
 
     void initSockets();
     void initContent();
+
+    void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
     QRectF boundingRect() const override { return QRectF(0, 0, width, height).normalized(); }
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
@@ -39,6 +43,6 @@ private:
     QPen penSelected;
     QBrush titleBrush;
     QBrush bgBrush;
-
+    QPointF m_NodeOldPos;
 
 };

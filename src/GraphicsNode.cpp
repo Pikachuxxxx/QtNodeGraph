@@ -36,7 +36,7 @@ GraphicsNode::GraphicsNode(Node* node)
 
     initSockets();
 
-    initContent();
+    //initContent();
 }
 
 void GraphicsNode::initSockets()
@@ -50,6 +50,21 @@ void GraphicsNode::initContent()
     node->getContent()->setGeometry(QRect(edge_size, titleHeight + edge_size, width - 2 * edge_size, height - 2 * edge_size - titleHeight));
     grContent->setWidget(node->getContent());
     grContent->setZValue(10);
+}
+
+void GraphicsNode::mousePressEvent(QGraphicsSceneMouseEvent* event)
+{
+    m_NodeOldPos = pos();
+
+    QGraphicsItem::mousePressEvent(event);
+}
+
+void GraphicsNode::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+{
+    if (pos() != m_NodeOldPos)
+        node->getScene()->getUndoStack()->push(new MoveNodeCommand(node, m_NodeOldPos, node->getScene()->getGraphicsScene()));
+
+    QGraphicsItem::mouseReleaseEvent(event);
 }
 
 void GraphicsNode::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)

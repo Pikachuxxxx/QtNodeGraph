@@ -7,14 +7,14 @@ GraphicsCutLine::GraphicsCutLine(QGraphicsItem* parent /*= nullptr*/)
 {
     pen = QPen(Qt::white);
     pen.setWidth(1.0f);
-    pen.setDashPattern({ 1, 1 });
+    pen.setDashPattern({ 5, 5 });
 
-    setZValue(2);
+    setZValue(12);
 }
 
 void GraphicsCutLine::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget /*= nullptr*/)
 {
-    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     painter->setBrush(Qt::NoBrush);
     painter->setPen(pen);
 
@@ -30,10 +30,6 @@ QPainterPath GraphicsCutLine::shape() const
         path = QPainterPath(linePoints[0]);
         for (auto line : linePoints)
             path.lineTo(line);
-    }
-    else { 
-        path = QPainterPath(QPointF(0, 0));
-        path.lineTo(QPointF(1, 1));
     }
 
     return path;

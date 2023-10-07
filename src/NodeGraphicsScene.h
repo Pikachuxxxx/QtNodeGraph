@@ -20,7 +20,8 @@ public:
 
     void keyPressEvent(QKeyEvent* event) override
     {
-        undoStack->undo();
+        if (event->key() == Qt::Key_Z && event->modifiers() & Qt::ControlModifier)
+            undoStack->undo();
 
         if (event->key() == Qt::Key_U && event->modifiers() & Qt::ControlModifier)
             undoStack->redo();

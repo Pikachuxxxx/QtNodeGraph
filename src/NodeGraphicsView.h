@@ -20,11 +20,11 @@ class NodeScene;
 class Socket;
 
 // INCOMPLETE
-// [] 14    : Deleting Edges (bugs, deleting multiple sometimes causes crash)
-// [] 15    : Cutting edges (paint won't work for GraphicsCutEdge, check the bounding rect of GraphicsCutEdge)
-// [] 19/20 : Undo/Redo fix bugs and finish implementation
-// [] 22/23 : Cut/Copy/Paste (Razix Alpha release)
-// [-] 25   : File has changed (Razix Alpha release, implemented in razix itself not in this project!)
+// [x] 14    : Deleting Edges (bugs, deleting multiple sometimes causes crash)
+// [x] 15    : Cutting edges (paint won't work for GraphicsCutEdge, check the bounding rect of GraphicsCutEdge)
+// [x] 19/20 : Undo/Redo Working add more features in Beta
+// [] 22/23  : Cut/Copy/Paste (Razix Beta release) Needs Node serialization/Deserialization API for this to work so deferred until that
+// [-] 25    : File has changed (Razix Beta release, implemented in razix itself not in this project!)
 
 enum class DRAG_MODE
 {
@@ -159,9 +159,6 @@ public:
 
         m_lastLMBClickScenePos = mapToScene(event->pos());
 
-        if (dynamic_cast<GraphicsNode*>(item))
-            m_NodeOldPos = item->pos();
-
         if (dynamic_cast<GraphicsSocket*>(item))
         {
             std::cout << "[Node Graphics View] Socket was clicked!" << std::endl;
@@ -213,10 +210,6 @@ public:
     void leftMouseRelease(QMouseEvent* event)
     {
         auto item = itemAt(event->pos());
-
-        if (dynamic_cast<GraphicsNode*>(item) && item->pos() != m_NodeOldPos)
-            m_Scene->getUndoStack()->push(new MoveNodeCommand(dynamic_cast<GraphicsNode*>(item)->getNode(), m_NodeOldPos, m_Scene->getGraphicsScene()));
-
 
         // Works for a continuous drag of mouse and released on the socket (2nd type of drawing edges from socket)
         // press on socket this won't work cause dist is very less when released, if we make a long drag dist is more and this alternate form will work,
@@ -332,5 +325,4 @@ private:
     NodeEdge* m_PreviousEdge = nullptr;
     Socket* m_LastStartSocket = nullptr;
     GraphicsCutLine* m_Cutline = nullptr;
-    QPointF m_NodeOldPos;
 };
