@@ -17,15 +17,15 @@ class Node
 {
 public:
     // TODO: Use a array for input and output counts that take the node colors/types in future
-    Node(NodeScene* scene, std::string nodeName, uint32_t inputsCount = 0, uint32_t outputsCount = 0);
-    Node(NodeScene* scene, std::string nodeName, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount);
+    Node(NodeScene* scene, std::string nodeName, SocketStyle style, uint32_t inputsCount = 0, uint32_t outputsCount = 0);
+    Node(NodeScene* scene, std::string nodeName, SocketStyle style, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount);
     ~Node();
 
     void remove();
     void add();
 
-    void addInputSocket(const std::string& name = "input_socket", SocketPos pos = LEFT_TOP, const std::string& hexColor = "#FFFF7700");
-    void addOutputSocket(const std::string& name = "input_socket", SocketPos pos = RIGHT_TOP, const std::string& hexColor = "#FF00A5FF");
+    void addInputSocket(const std::string& name = "input_socket", SocketStyle style = CIRCLE, SocketPos pos = LEFT_TOP, const std::string& hexColor = "#FFFF7700");
+    void addOutputSocket(const std::string& name = "input_socket", SocketStyle style = CIRCLE, SocketPos pos = RIGHT_TOP, const std::string& hexColor = "#FF00A5FF");
 
     QPointF                     getSocketPosition(uint32_t index, SocketPos pos);
     inline QPointF              getPos();

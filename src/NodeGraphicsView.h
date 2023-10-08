@@ -287,7 +287,8 @@ private:
 
         if (grSocket) {
             auto endSocket = grSocket->getSocket();
-            if (endSocket != m_DragStartSocket) {
+            // Socket should not be itself and cannot be of same type
+            if (endSocket != m_DragStartSocket && m_DragStartSocket->getType() != endSocket->getType()) {
                 std::cout << "\t assign end socket" << std::endl;
 
                 // If the previous socket is null, the final socked might have a previous edge so mark that as previous edge

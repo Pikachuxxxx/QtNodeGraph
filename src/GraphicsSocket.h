@@ -2,14 +2,15 @@
 
 #include <iostream>
 
-#include <QGraphicsItem>
-#include <QColor>
-#include <QPen>
 #include <QBrush>
+#include <QColor>
+#include <QGraphicsItem>
 #include <QPainter>
+#include <QPen>
 
 class Socket;
 
+// TODO: Implement hovering for all types of socket styles
 class GraphicsSocket : public QGraphicsItem
 {
 public:
@@ -30,19 +31,22 @@ public:
         QGraphicsItem::mouseMoveEvent(event);
     }
 
-    QRectF boundingRect() const override { return QRectF(-(radius + outlineWidth), -(radius + outlineWidth), 2 * (radius + outlineWidth), 2 * (radius + outlineWidth)); }
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+    QRectF boundingRect() const override;
+    void   paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 
     Socket* getSocket() { return m_Socket; }
 
 private:
-    Socket* m_Socket = nullptr;
-    int32_t radius = 6;
-    float outlineWidth = 1.0f;
-    QColor bgColor;
-    QColor outlineColor;
-    QPen pen;
-    QPen penHovered;
-    QBrush brush;
-    bool hover = false;
+    Socket* m_Socket     = nullptr;
+    int32_t radius       = 6;
+    int32_t offset       = 16;
+    float   outlineWidth = 1.0f;
+    QColor  bgColor;
+    QColor  outlineColor;
+    QPen    pen;
+    QPen    penHovered;
+    QBrush  brush;
+    bool    hover = false;
+    QPixmap pinConnected;
+    QPixmap pinEmpty;
 };

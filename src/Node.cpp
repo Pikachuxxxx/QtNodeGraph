@@ -7,7 +7,7 @@
 
 #include <QUndoCommand>
 
-Node::Node(NodeScene* scene, std::string nodeName, uint32_t inputsCount, uint32_t outputsCount)
+Node::Node(NodeScene* scene, std::string nodeName, SocketStyle style, uint32_t inputsCount, uint32_t outputsCount)
     : scene(scene), title(nodeName)
 {
     nodeContent  = new NodeContentWidget;
@@ -17,17 +17,17 @@ Node::Node(NodeScene* scene, std::string nodeName, uint32_t inputsCount, uint32_
     scene->getGraphicsScene()->addItem(graphicsNode);
 
     for (uint32_t i = 0; i < inputsCount; i++) {
-        auto socket = new Socket(this, i, LEFT_BOTTOM);
+        auto socket = new Socket(this, SOCKET_INPUT, i, style, LEFT_BOTTOM);
         inputs.push_back(socket);
     }
 
     for (uint32_t i = 0; i < outputsCount; i++) {
-        auto socket = new Socket(this, i, RIGHT_TOP);
+        auto socket = new Socket(this, SOCKET_OUTPUT, i, style, RIGHT_TOP);
         outputs.push_back(socket);
     }
 }
 
-Node::Node(NodeScene* scene, std::string nodeName, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount)
+Node::Node(NodeScene* scene, std::string nodeName, SocketStyle style, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount)
     : scene(scene), title(nodeName)
 {
     nodeContent  = new NodeContentWidget;
@@ -37,12 +37,12 @@ Node::Node(NodeScene* scene, std::string nodeName, std::vector<std::string> inpu
     scene->getGraphicsScene()->addItem(graphicsNode);
 
     for (uint32_t i = 0; i < inputsCount.size(); i++) {
-        auto socket = new Socket(this, i, LEFT_BOTTOM, false, inputsCount[i]);
+        auto socket = new Socket(this, SOCKET_INPUT, i, style, LEFT_BOTTOM, false, inputsCount[i]);
         inputs.push_back(socket);
     }
 
     for (uint32_t i = 0; i < outputsCount.size(); i++) {
-        auto socket = new Socket(this, i, RIGHT_TOP, true, outputsCount[i]);
+        auto socket = new Socket(this, SOCKET_OUTPUT, i, style, RIGHT_TOP, true, outputsCount[i]);
         outputs.push_back(socket);
     }
 }
@@ -62,6 +62,11 @@ void Node::setGraphicsNode(IGraphicsNode* grNode)
     // remove old node
     scene->getGraphicsScene()->removeItem(graphicsNode);
     delete graphicsNode;
+
+    // FIXME: Instead of clearing add the old sockets again
+
+    inputs.clear();
+    outputs.clear();
 
     graphicsNode = grNode;
     scene->getGraphicsScene()->addItem(grNode);
@@ -142,15 +147,15 @@ void Node::add()
     scene->getGraphicsScene()->addItem(graphicsNode);
 }
 
-void Node::addInputSocket(const std::string& name /*= "input_socket"*/, SocketPos pos /*= LEFT_TOP*/, const std::string& hexColor /*= "FFFF7700"*/)
+void Node::addInputSocket(const std::string& name /*= "input_socket"*/, SocketStyle style /*= CIRCLE*/, SocketPos pos /*= LEFT_TOP*/, const std::string& hexColor /*= "FFFF7700"*/)
 {
-    auto socket = new Socket(this, (uint32_t) inputs.size(), pos, false, hexColor, name);
+    auto socket = new Socket(this, SOCKET_INPUT, (uint32_t) inputs.size(), style, pos, false, hexColor, name);
     inputs.push_back(socket);
 }
 
-void Node::addOutputSocket(const std::string& name /*= "input_socket"*/, SocketPos pos /*= RIGHT_TOP*/, const std::string& hexColor /*= "#00A5FF"*/)
+void Node::addOutputSocket(const std::string& name /*= "input_socket"*/, SocketStyle style /*= CIRCLE*/, SocketPos pos /*= RIGHT_TOP*/, const std::string& hexColor /*= "#00A5FF"*/)
 {
-    auto socket = new Socket(this, (uint32_t) outputs.size(), pos, true, hexColor, name);
+    auto socket = new Socket(this, SOCKET_INPUT, (uint32_t) outputs.size(), style, pos, true, hexColor, name);
     outputs.push_back(socket);
 }
 

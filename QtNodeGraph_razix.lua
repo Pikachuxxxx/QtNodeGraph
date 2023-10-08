@@ -51,6 +51,8 @@ project "QtNodeGraph"
         "src/**.hpp",
         "src/**.c",
         "src/**.cpp",
+        "src/**.qrc",
+        "src/**.png"
     }
 
    includedirs
