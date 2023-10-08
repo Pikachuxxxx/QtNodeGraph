@@ -155,7 +155,7 @@ void Node::addInputSocket(const std::string& name /*= "input_socket"*/, SocketSt
 
 void Node::addOutputSocket(const std::string& name /*= "input_socket"*/, SocketStyle style /*= CIRCLE*/, SocketPos pos /*= RIGHT_TOP*/, const std::string& hexColor /*= "#00A5FF"*/)
 {
-    auto socket = new Socket(this, SOCKET_INPUT, (uint32_t) outputs.size(), style, pos, true, hexColor, name);
+    auto socket = new Socket(this, SOCKET_OUTPUT, (uint32_t) outputs.size(), style, pos, true, hexColor, name);
     outputs.push_back(socket);
 }
 

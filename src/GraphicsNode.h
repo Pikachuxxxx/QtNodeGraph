@@ -46,7 +46,7 @@ protected:
     uint32_t           height      = 240;
     uint32_t           edge_size   = 8;
     uint32_t           titleHeight = 24;
-    uint32_t           padding     = 5;
+    uint32_t           padding     = 6;
     QPen               penDefault;
     QPen               penSelected;
     QPen               penHovered;

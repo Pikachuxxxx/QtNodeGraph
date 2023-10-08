@@ -1,5 +1,6 @@
 #include "GraphicsNode.h"
 
+#include <QGraphicsDropShadowEffect>
 #include <QGraphicsProxyWidget>
 
 #include "Node.h"
@@ -65,7 +66,7 @@ IGraphicsNode::IGraphicsNode(Node* node)
 
     titleItem = new QGraphicsTextItem(this);
     QFont f;
-    f.setPointSize(12);
+    f.setPointSize(16);
     f.setBold(true);
     titleItem->setFont(f);
     titleItem->setPlainText(node->getTitle().c_str());
@@ -87,6 +88,13 @@ IGraphicsNode::IGraphicsNode(Node* node)
     bgBrush = QBrush(QColor("#E3212121"));
     //bgBrush = QBrush(QColor("#FF84AD18"));
     setAcceptHoverEvents(true);
+
+    QGraphicsDropShadowEffect* DropShadowEffect = new QGraphicsDropShadowEffect();
+    DropShadowEffect->setBlurRadius(20);
+    DropShadowEffect->setOffset(1, 2);
+    DropShadowEffect->setColor(Qt::black);
+
+    this->setGraphicsEffect(DropShadowEffect);
 }
 
 void IGraphicsNode::mousePressEvent(QGraphicsSceneMouseEvent* event)
