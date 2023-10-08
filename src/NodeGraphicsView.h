@@ -45,6 +45,8 @@ public:
     void init(NodeScene* scene);
     void setNodeScene(NodeScene* scene);
 
+    inline NodeScene* getScene() { return m_Scene; }
+
 protected:
     virtual void OnKeyPressEvent(QKeyEvent* e) {}
     virtual void OnLeftMousePress(QMouseEvent* event) {}

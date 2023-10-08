@@ -1,27 +1,27 @@
 #include "Node.h"
 
-#include "NodeScene.h"
 #include "GraphicsNode.h"
 #include "NodeContentWidget.h"
 #include "NodeEdge.h"
+#include "NodeScene.h"
 
 #include <QUndoCommand>
 
 Node::Node(NodeScene* scene, std::string nodeName, uint32_t inputsCount, uint32_t outputsCount)
     : scene(scene), title(nodeName)
 {
-    nodeContent = new NodeContentWidget;
+    nodeContent  = new NodeContentWidget;
     graphicsNode = new GraphicsNode(this);
 
     scene->addNode(this);
     scene->getGraphicsScene()->addItem(graphicsNode);
 
-    for (size_t i = 0; i < inputsCount; i++) {
+    for (uint32_t i = 0; i < inputsCount; i++) {
         auto socket = new Socket(this, i, LEFT_BOTTOM);
         inputs.push_back(socket);
     }
 
-    for (size_t i = 0; i < outputsCount; i++) {
+    for (uint32_t i = 0; i < outputsCount; i++) {
         auto socket = new Socket(this, i, RIGHT_TOP);
         outputs.push_back(socket);
     }
@@ -30,18 +30,18 @@ Node::Node(NodeScene* scene, std::string nodeName, uint32_t inputsCount, uint32_
 Node::Node(NodeScene* scene, std::string nodeName, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount)
     : scene(scene), title(nodeName)
 {
-    nodeContent = new NodeContentWidget;
+    nodeContent  = new NodeContentWidget;
     graphicsNode = new GraphicsNode(this);
 
     scene->addNode(this);
     scene->getGraphicsScene()->addItem(graphicsNode);
 
-    for (size_t i = 0; i < inputsCount.size(); i++) {
+    for (uint32_t i = 0; i < inputsCount.size(); i++) {
         auto socket = new Socket(this, i, LEFT_BOTTOM, false, inputsCount[i]);
         inputs.push_back(socket);
     }
 
-    for (size_t i = 0; i < outputsCount.size(); i++) {
+    for (uint32_t i = 0; i < outputsCount.size(); i++) {
         auto socket = new Socket(this, i, RIGHT_TOP, true, outputsCount[i]);
         outputs.push_back(socket);
     }
@@ -49,12 +49,25 @@ Node::Node(NodeScene* scene, std::string nodeName, std::vector<std::string> inpu
 
 Node::~Node()
 {
-
 }
 
 void Node::setPos(uint32_t x, uint32_t y)
 {
     graphicsNode->setPos(x, y);
+}
+
+void Node::setGraphicsNode(IGraphicsNode* grNode)
+{
+    auto oldPos = graphicsNode->pos();
+    // remove old node
+    scene->getGraphicsScene()->removeItem(graphicsNode);
+    delete graphicsNode;
+
+    graphicsNode = grNode;
+    scene->getGraphicsScene()->addItem(grNode);
+
+    graphicsNode->setPos(oldPos);
+    graphicsNode->update();
 }
 
 QPointF Node::getPos()
@@ -68,7 +81,9 @@ QPointF Node::getSocketPosition(uint32_t index, SocketPos pos)
         return QPointF();
 
     float x = 0, y = 0;
-    if (pos == LEFT_TOP || pos == LEFT_BOTTOM) x = 0; else x = graphicsNode->getWidth();
+    if (pos == LEFT_TOP || pos == LEFT_BOTTOM) x = 0;
+    else
+        x = graphicsNode->getWidth();
 
     if (pos == LEFT_TOP || pos == RIGHT_TOP)
         y = graphicsNode->getTitleHeight() + graphicsNode->getEdgeSize() + index * socketSpacing + graphicsNode->getPadding();
@@ -80,13 +95,13 @@ QPointF Node::getSocketPosition(uint32_t index, SocketPos pos)
 
 void Node::remove()
 {
-    for (auto input : inputs) {
-        for (auto edge : input->getEdges())
+    for (auto input: inputs) {
+        for (auto edge: input->getEdges())
             edge->remove();
     }
 
-    for (auto output : outputs) {
-        for (auto edge : output->getEdges())
+    for (auto output: outputs) {
+        for (auto edge: output->getEdges())
             edge->remove();
     }
     // Doing remove item instead of delete
@@ -127,10 +142,22 @@ void Node::add()
     scene->getGraphicsScene()->addItem(graphicsNode);
 }
 
+void Node::addInputSocket(const std::string& name /*= "input_socket"*/, SocketPos pos /*= LEFT_TOP*/, const std::string& hexColor /*= "FFFF7700"*/)
+{
+    auto socket = new Socket(this, (uint32_t) inputs.size(), pos, false, hexColor, name);
+    inputs.push_back(socket);
+}
+
+void Node::addOutputSocket(const std::string& name /*= "input_socket"*/, SocketPos pos /*= RIGHT_TOP*/, const std::string& hexColor /*= "#00A5FF"*/)
+{
+    auto socket = new Socket(this, (uint32_t) outputs.size(), pos, true, hexColor, name);
+    outputs.push_back(socket);
+}
+
 AddNodeCommand::AddNodeCommand(Node* node, QGraphicsScene* scene)
     : mNode(node), mGraphicsScene(scene)
 {
-    mNode = node;
+    mNode            = node;
     mInitialPosition = node->getPos();
     mGraphicsScene->update();
 
@@ -158,7 +185,7 @@ RemoveNodeCommand::RemoveNodeCommand(QGraphicsScene* scene)
     if (list.size() > 0) {
         list.first()->setSelected(false);
 
-        mNode = static_cast<GraphicsNode*>(list.first())->getNode();
+        mNode            = static_cast<GraphicsNode*>(list.first())->getNode();
         mInitialPosition = mNode->getPos();
         mGraphicsScene->update();
 
@@ -202,7 +229,7 @@ void MoveNodeCommand::redo()
 bool MoveNodeCommand::mergeWith(const QUndoCommand* other)
 {
     const MoveNodeCommand* moveCommand = static_cast<const MoveNodeCommand*>(other);
-    Node* item = moveCommand->mNode;
+    Node*                  item        = moveCommand->mNode;
 
     if (item != mNode)
         return false;

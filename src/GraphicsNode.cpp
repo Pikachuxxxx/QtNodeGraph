@@ -3,72 +3,21 @@
 #include <QGraphicsProxyWidget>
 
 #include "Node.h"
-#include "NodeScene.h"
 #include "NodeContentWidget.h"
+#include "NodeScene.h"
 
 GraphicsNode::GraphicsNode(Node* node)
-    : node(node)
+    : IGraphicsNode(node)
 {
-    this->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
-    this->setPos(node->getScene()->getOrigin().x(), node->getScene()->getOrigin().y());
-
-    titleItem = new QGraphicsTextItem(this);
-    QFont f;
-    f.setPointSize(12);
-    f.setBold(true);
-    titleItem->setFont(f);
-    titleItem->setPlainText(node->getTitle().c_str());
-    titleItem->setDefaultTextColor(Qt::white);
-    titleItem->setTextWidth(width - 2 * padding);
-    titleItem->setPos(padding, 0);
-    penHovered = QPen("#FF37A6FF");
-    penHovered.setWidth(6.0f);
-
-    penDefault = QPen(QColor("#7f000000")); // ARGB E5FA96
-    // florescent green - RGB
-    //penDefault = QPen(QColor("#FFE5FA96"));
-    penDefault.setWidth(4);
-    penSelected = QPen(QColor("#FFFFA637"));
-    penSelected.setWidth(4);
-
-    titleBrush = QBrush(QColor("#FF313131"));
-    //titleBrush = QBrush(QColor("#FFB9F027"));
-    bgBrush = QBrush(QColor("#E3212121"));
-    //bgBrush = QBrush(QColor("#FF84AD18"));
-    setAcceptHoverEvents(true);
-
-    initSockets();
-
-    //initContent();
 }
 
-void GraphicsNode::initSockets()
-{
-
-}
-
-void GraphicsNode::initContent()
-{
-    auto grContent = new QGraphicsProxyWidget(this);
-    node->getContent()->setGeometry(QRect(edge_size, titleHeight + edge_size, width - 2 * edge_size, height - 2 * edge_size - titleHeight));
-    grContent->setWidget(node->getContent());
-    grContent->setZValue(10);
-}
-
-void GraphicsNode::mousePressEvent(QGraphicsSceneMouseEvent* event)
-{
-    m_NodeOldPos = pos();
-
-    QGraphicsItem::mousePressEvent(event);
-}
-
-void GraphicsNode::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
-{
-    if (pos() != m_NodeOldPos)
-        node->getScene()->getUndoStack()->push(new MoveNodeCommand(node, m_NodeOldPos, node->getScene()->getGraphicsScene()));
-
-    QGraphicsItem::mouseReleaseEvent(event);
-}
+//void GraphicsNode::initContent()
+//{
+//    auto grContent = new QGraphicsProxyWidget(this);
+//    node->getContent()->setGeometry(QRect(edge_size, titleHeight + edge_size, width - 2 * edge_size, height - 2 * edge_size - titleHeight));
+//    grContent->setWidget(node->getContent());
+//    grContent->setZValue(10);
+//}
 
 void GraphicsNode::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
@@ -106,5 +55,51 @@ void GraphicsNode::paint(QPainter* painter, const QStyleOptionGraphicsItem* opti
     else
         painter->setPen(penSelected);
     painter->drawPath(path_outline.simplified());
+}
 
+IGraphicsNode::IGraphicsNode(Node* node)
+    : node(node)
+{
+    this->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
+    this->setPos(node->getScene()->getOrigin().x(), node->getScene()->getOrigin().y());
+
+    titleItem = new QGraphicsTextItem(this);
+    QFont f;
+    f.setPointSize(12);
+    f.setBold(true);
+    titleItem->setFont(f);
+    titleItem->setPlainText(node->getTitle().c_str());
+    titleItem->setDefaultTextColor(Qt::white);
+    titleItem->setTextWidth(width - 2 * padding);
+    titleItem->setPos(padding, 0);
+    penHovered = QPen("#FF37A6FF");
+    penHovered.setWidth(6.0f);
+
+    penDefault = QPen(QColor("#7f000000"));    // ARGB E5FA96
+    // florescent green - RGB
+    //penDefault = QPen(QColor("#FFE5FA96"));
+    penDefault.setWidth(4);
+    penSelected = QPen(QColor("#FFFFA637"));
+    penSelected.setWidth(4);
+
+    titleBrush = QBrush(QColor("#FF313131"));
+    //titleBrush = QBrush(QColor("#FFB9F027"));
+    bgBrush = QBrush(QColor("#E3212121"));
+    //bgBrush = QBrush(QColor("#FF84AD18"));
+    setAcceptHoverEvents(true);
+}
+
+void IGraphicsNode::mousePressEvent(QGraphicsSceneMouseEvent* event)
+{
+    m_NodeOldPos = pos();
+
+    QGraphicsItem::mousePressEvent(event);
+}
+
+void IGraphicsNode::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+{
+    if (pos() != m_NodeOldPos)
+        node->getScene()->getUndoStack()->push(new MoveNodeCommand(node, m_NodeOldPos, node->getScene()->getGraphicsScene()));
+
+    QGraphicsItem::mouseReleaseEvent(event);
 }

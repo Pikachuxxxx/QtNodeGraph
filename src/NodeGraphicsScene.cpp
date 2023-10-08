@@ -41,8 +41,8 @@ NodeGraphicsScene::~NodeGraphicsScene()
 
 QPoint NodeGraphicsScene::getOrigin()
 {
-    //return QPoint(sceneRect().width() / 2, sceneRect().height() / 2);
-    return QPoint(0.0f, 0.0f);
+    return QPoint(sceneRect().width() / 2, sceneRect().height() / 2);
+    //return QPoint(0.0f, 0.0f);
 }
 
 void NodeGraphicsScene::drawBackground(QPainter* painter, const QRectF& rect)
@@ -71,10 +71,10 @@ void NodeGraphicsScene::drawBackground(QPainter* painter, const QRectF& rect)
     }
 
     painter->setPen(m_LightPen);
-    painter->drawLines(lines_light.data(), lines_light.size());
+    painter->drawLines(lines_light.data(), (uint32_t)lines_light.size());
 
     painter->setPen(m_DarkPen);
-    painter->drawLines(lines_dark.data(), lines_dark.size());
+    painter->drawLines(lines_dark.data(), (uint32_t) lines_dark.size());
 }
 
 void NodeGraphicsScene::OnClipboardChanged()

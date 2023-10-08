@@ -37,7 +37,7 @@ public:
 
 private:
     Socket* m_Socket = nullptr;
-    uint32_t radius = 6;
+    int32_t radius = 6;
     float outlineWidth = 1.0f;
     QColor bgColor;
     QColor outlineColor;

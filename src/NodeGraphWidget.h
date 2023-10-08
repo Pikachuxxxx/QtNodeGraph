@@ -12,7 +12,8 @@ public:
     NodeGraphWidget(NodeGraphicsView* graphicsView = nullptr, QWidget* parent = nullptr);
     ~NodeGraphWidget();
 
-    QPoint getOrigin();
+    QPoint            getOrigin();
+    inline NodeScene* getScene() { return m_Scene; }
 
 private:
     NodeScene*        m_Scene;

@@ -56,7 +56,7 @@ void NodeGraphicsView::deleteSelected()
             dynamic_cast<GraphicsEdge*>(item)->getEdge()->remove();
             selectedItems.erase(std::remove(selectedItems.begin(), selectedItems.end(), item), selectedItems.end());
             item = nullptr;
-        } else if (dynamic_cast<GraphicsNode*>(item)) {
+        } else if (dynamic_cast<IGraphicsNode*>(item)) {
             //dynamic_cast<GraphicsNode*>(item)->getNode()->remove();
             m_Scene->getUndoStack()->push(new RemoveNodeCommand(m_Scene->getGraphicsScene()));
             selectedItems.erase(std::remove(selectedItems.begin(), selectedItems.end(), item), selectedItems.end());

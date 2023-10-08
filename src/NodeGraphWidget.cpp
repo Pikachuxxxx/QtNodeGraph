@@ -10,7 +10,7 @@
 #include "Socket.h"
 
 NodeGraphWidget::NodeGraphWidget(NodeGraphicsView* graphicsView, QWidget* parent)
-    : QWidget(parent)
+    : QWidget(parent), m_GraphicsView(graphicsView)
 {
     setGeometry(200, 200, 800, 600);
 
@@ -21,9 +21,7 @@ NodeGraphWidget::NodeGraphWidget(NodeGraphicsView* graphicsView, QWidget* parent
     m_Scene = new NodeScene;
 
     //m_GraphicsView = new NodeGraphicsView(m_Scene);
-    if (graphicsView)
-        m_GraphicsView = graphicsView;
-    else
+    if (!graphicsView)
         m_GraphicsView = new NodeGraphicsView();
 
     m_GraphicsView->init(m_Scene);

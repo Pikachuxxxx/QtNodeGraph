@@ -8,6 +8,7 @@
 #include "Socket.h"
 
 class NodeScene;
+class IGraphicsNode;
 class GraphicsNode;
 class NodeContentWidget;
 
@@ -20,32 +21,37 @@ public:
     Node(NodeScene* scene, std::string nodeName, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount);
     ~Node();
 
-    QPointF getSocketPosition(uint32_t index, SocketPos pos);
-
     void remove();
     void add();
 
-    inline QPointF getPos();
-    void setPos(uint32_t x, uint32_t y);
-    inline NodeScene* getScene() { return scene; }
-    inline const std::string& getTitle() const { return title; }
-    inline NodeContentWidget* getContent() { return nodeContent; }
-    inline void setContent(NodeContentWidget* widget) { nodeContent = widget; }
-    inline GraphicsNode* getGraphicsNode() { return graphicsNode; }
-    inline Socket* getInputSocket(uint32_t idx) { return inputs[idx]; }
-    inline Socket* getOutputSocket(uint32_t idx) { return outputs[idx]; }
+    void addInputSocket(const std::string& name = "input_socket", SocketPos pos = LEFT_TOP, const std::string& hexColor = "#FFFF7700");
+    void addOutputSocket(const std::string& name = "input_socket", SocketPos pos = RIGHT_TOP, const std::string& hexColor = "#FF00A5FF");
+
+    QPointF                     getSocketPosition(uint32_t index, SocketPos pos);
+    inline QPointF              getPos();
+    void                        setPos(uint32_t x, uint32_t y);
+    inline NodeScene*           getScene() { return scene; }
+    inline const std::string&   getTitle() const { return title; }
+    inline NodeContentWidget*   getContent() { return nodeContent; }
+    inline void                 setContent(NodeContentWidget* widget) { nodeContent = widget; }
+    inline IGraphicsNode*       getGraphicsNode() { return graphicsNode; }
+    void                        setGraphicsNode(IGraphicsNode* grNode);
+    inline Socket*              getInputSocket(uint32_t idx) { return inputs[idx]; }
+    inline Socket*              getOutputSocket(uint32_t idx) { return outputs[idx]; }
+    inline std::vector<Socket*> getInputSockets() { return inputs; }
+    inline std::vector<Socket*> getOutputSockets() { return inputs; }
 
 private:
-    NodeScene* scene = nullptr;
-    std::string title;
-    GraphicsNode* graphicsNode = nullptr;
-    NodeContentWidget* nodeContent;
+    NodeScene*           scene = nullptr;
+    std::string          title;
+    IGraphicsNode*       graphicsNode = nullptr;
+    NodeContentWidget*   nodeContent;
     std::vector<Socket*> inputs;
     std::vector<Socket*> outputs;
-    uint32_t socketSpacing = 24;
+    uint32_t             socketSpacing = 24;
 };
 
-// Commands for Undo and Redo 
+// Commands for Undo and Redo
 // Add, Remove and Move variations
 
 class AddNodeCommand : public QUndoCommand
@@ -57,9 +63,9 @@ public:
     void redo() override;
 
 private:
-    Node* mNode = nullptr;
+    Node*           mNode          = nullptr;
     QGraphicsScene* mGraphicsScene = nullptr;
-    QPointF mInitialPosition;
+    QPointF         mInitialPosition;
 };
 
 class RemoveNodeCommand : public QUndoCommand
@@ -71,9 +77,9 @@ public:
     void redo() override;
 
 private:
-    Node* mNode = nullptr;
+    Node*           mNode          = nullptr;
     QGraphicsScene* mGraphicsScene = nullptr;
-    QPointF mInitialPosition;
+    QPointF         mInitialPosition;
 };
 
 class MoveNodeCommand : public QUndoCommand
@@ -86,8 +92,8 @@ public:
     bool mergeWith(const QUndoCommand* other) override;
 
 private:
-    Node* mNode = nullptr;
+    Node*           mNode          = nullptr;
     QGraphicsScene* mGraphicsScene = nullptr;
-    QPointF mOldPosition;
-    QPointF mNewPosition;
+    QPointF         mOldPosition;
+    QPointF         mNewPosition;
 };
