@@ -7,7 +7,7 @@
 class Node;
 class MoveNodeCommand;
 
-#define SOCKET_SPACING 30
+#define SOCKET_SPACING 32
 
 class IGraphicsNode : public QGraphicsItem
 {

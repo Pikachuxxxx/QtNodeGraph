@@ -24,8 +24,12 @@ public:
     void remove();
     void add();
 
+    void update();
+
     void addInputSocket(const std::string& name = "input_socket", SocketStyle style = CIRCLE, SocketPos pos = LEFT_TOP, const std::string& hexColor = "#FFFF7700");
+    void removeInputSocket(uint32_t idx);
     void addOutputSocket(const std::string& name = "input_socket", SocketStyle style = CIRCLE, SocketPos pos = RIGHT_TOP, const std::string& hexColor = "#FF00A5FF");
+    void removeOutputSocket(uint32_t idx);
 
     QPointF                     getSocketPosition(uint32_t index, SocketPos pos);
     inline QPointF              getPos();
@@ -39,7 +43,7 @@ public:
     inline Socket*              getInputSocket(uint32_t idx) { return inputs[idx]; }
     inline Socket*              getOutputSocket(uint32_t idx) { return outputs[idx]; }
     inline std::vector<Socket*> getInputSockets() { return inputs; }
-    inline std::vector<Socket*> getOutputSockets() { return inputs; }
+    inline std::vector<Socket*> getOutputSockets() { return outputs; }
 
 private:
     NodeScene*           scene = nullptr;

@@ -96,6 +96,7 @@ QRectF GraphicsSocket::boundingRect() const
         path.addPolygon(arrowV);
         return path.boundingRect();
     }
+    return QRectF();
 }
 
 void GraphicsSocket::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)

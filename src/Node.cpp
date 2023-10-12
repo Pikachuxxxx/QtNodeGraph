@@ -143,16 +143,43 @@ void Node::add()
     scene->getGraphicsScene()->addItem(graphicsNode);
 }
 
+void Node::update()
+{
+    graphicsNode->update();
+}
+
 void Node::addInputSocket(const std::string& name /*= "input_socket"*/, SocketStyle style /*= CIRCLE*/, SocketPos pos /*= LEFT_TOP*/, const std::string& hexColor /*= "FFFF7700"*/)
 {
     auto socket = new Socket(this, SOCKET_INPUT, (uint32_t) inputs.size(), style, pos, false, hexColor, name);
     inputs.push_back(socket);
+
+    graphicsNode->update();
+}
+
+void Node::removeInputSocket(uint32_t idx)
+{
+    auto socket = getInputSocket(idx);
+    socket->remove();
+
+    inputs.erase(inputs.begin() + idx);
+    graphicsNode->update();
 }
 
 void Node::addOutputSocket(const std::string& name /*= "input_socket"*/, SocketStyle style /*= CIRCLE*/, SocketPos pos /*= RIGHT_TOP*/, const std::string& hexColor /*= "#00A5FF"*/)
 {
     auto socket = new Socket(this, SOCKET_OUTPUT, (uint32_t) outputs.size(), style, pos, true, hexColor, name);
     outputs.push_back(socket);
+
+    graphicsNode->update();
+}
+
+void Node::removeOutputSocket(uint32_t idx)
+{
+    auto socket = getOutputSocket(idx);
+    socket->remove();
+
+    outputs.erase(outputs.begin() + idx);
+    graphicsNode->update();
 }
 
 AddNodeCommand::AddNodeCommand(Node* node, QGraphicsScene* scene)

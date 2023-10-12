@@ -8,7 +8,7 @@
 #include <iostream>
 
 Socket::Socket(Node* node, SocketType type, uint32_t index, SocketStyle style, SocketPos position, bool multiEdges, std::string colorHex, const std::string& name)
-    : node(node), index(index), position(position), m_SupportsMultipleEdges(multiEdges), name(name), type(type), style(style)
+    : node(node), index(index), position(position), m_SupportsMultipleEdges(multiEdges), m_Name(name), type(type), style(style)
 {
     grSocket = new GraphicsSocket(this, colorHex);
     grSocket->setPos(node->getSocketPosition(index, position));
@@ -18,6 +18,13 @@ QPointF Socket::getPos()
 {
     // return grSocket->pos();
     return node->getSocketPosition(index, position);
+}
+
+void Socket::remove()
+{
+    removeEdges();
+    delete grSocket;
+    grSocket = nullptr;
 }
 
 void Socket::removeEdges()

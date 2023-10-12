@@ -42,10 +42,12 @@ public:
     QPointF                   getPos();
     inline SocketPos          getSocketPos() { return position; }
     inline Node*              getNode() { return node; }
-    inline const std::string& getSocketName() { return name; }
+    inline const std::string& getSocketName() { return m_Name; }
+    inline const void         setSocketName(const std::string& name) { m_Name = name; }
 
     inline bool                   hasEdges() { return edges.size() > 0 ? true : false; }
     inline void                   addEdge(NodeEdge* edge) { edges.push_back(edge); }
+    void                          remove();
     void                          removeEdges();
     void                          removeEdge(NodeEdge* edge);
     inline std::vector<NodeEdge*> getEdges() { return edges; }
@@ -61,6 +63,6 @@ private:
     SocketType             type;
     SocketStyle            style;
     GraphicsSocket*        grSocket = nullptr;
-    std::string            name;
+    std::string            m_Name;
     bool                   m_SupportsMultipleEdges = true;
 };
