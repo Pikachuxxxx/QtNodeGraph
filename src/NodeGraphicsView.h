@@ -38,6 +38,8 @@ constexpr uint32_t EDGE_DRAG_THRESHOLD = 10;    // pixels
 
 class NodeGraphicsView : public QGraphicsView
 {
+    Q_OBJECT
+
 public:
     NodeGraphicsView(QWidget* parent = nullptr);
     ~NodeGraphicsView() {}
@@ -46,6 +48,9 @@ public:
     void setNodeScene(NodeScene* scene);
 
     inline NodeScene* getScene() { return m_Scene; }
+
+signals:
+    void OnNodeSelected(Node* node);
 
 protected:
     virtual void OnKeyPressEvent(QKeyEvent* e) {}
@@ -167,6 +172,11 @@ private:
         auto item = itemAt(event->pos());
 
         m_lastLMBClickScenePos = mapToScene(event->pos());
+
+        if (dynamic_cast<IGraphicsNode*>(item))
+            emit OnNodeSelected(dynamic_cast<IGraphicsNode*>(item)->getNode());
+        else
+            emit OnNodeSelected(nullptr);
 
         if (dynamic_cast<GraphicsSocket*>(item)) {
             std::cout << "[Node Graphics View] Socket was clicked!" << std::endl;

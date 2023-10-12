@@ -19,7 +19,7 @@ public:
     // TODO: Use a array for input and output counts that take the node colors/types in future
     Node(NodeScene* scene, std::string nodeName, SocketStyle style, uint32_t inputsCount = 0, uint32_t outputsCount = 0);
     Node(NodeScene* scene, std::string nodeName, SocketStyle style, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount);
-    ~Node();
+    virtual ~Node() {}
 
     void remove();
     void add();

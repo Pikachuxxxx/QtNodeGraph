@@ -47,10 +47,6 @@ Node::Node(NodeScene* scene, std::string nodeName, SocketStyle style, std::vecto
     }
 }
 
-Node::~Node()
-{
-}
-
 void Node::setPos(uint32_t x, uint32_t y)
 {
     graphicsNode->setPos(x, y);
