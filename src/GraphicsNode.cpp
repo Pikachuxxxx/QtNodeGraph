@@ -66,8 +66,8 @@ IGraphicsNode::IGraphicsNode(Node* node)
 
     titleItem = new QGraphicsTextItem(this);
     QFont f;
-    f.setPointSize(16);
-    f.setBold(true);
+    f.setPointSize(12);
+    f.setBold(false);
     titleItem->setFont(f);
     titleItem->setPlainText(node->getTitle().c_str());
     titleItem->setDefaultTextColor(Qt::white);
@@ -76,7 +76,7 @@ IGraphicsNode::IGraphicsNode(Node* node)
     penHovered = QPen("#FF37A6FF");
     penHovered.setWidth(6.0f);
 
-    penDefault = QPen(QColor("#7f000000"));    // ARGB E5FA96
+    penDefault = QPen(QColor("#000000"));    // ARGB E5FA96
     // florescent green - RGB
     //penDefault = QPen(QColor("#FFE5FA96"));
     penDefault.setWidth(4);

@@ -38,6 +38,10 @@ public:
 
     inline Node* getNode() { return node; }
 
+    QGraphicsTextItem* getTextItem() { return titleItem; }
+
+    QBrush getTitleBrush() { return titleBrush; }
+
 protected:
     Node*              node      = nullptr;
     QGraphicsTextItem* titleItem = nullptr;

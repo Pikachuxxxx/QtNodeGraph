@@ -17,7 +17,14 @@ Socket::Socket(Node* node, SocketType type, uint32_t index, SocketStyle style, S
 QPointF Socket::getPos()
 {
     // return grSocket->pos();
-    return node->getSocketPosition(index, position);
+    auto Pos = node->getSocketPosition(index, position);
+    if (style == HEADSHOT) {
+        if (position == RIGHT_BOTTOM || position == RIGHT_TOP)
+            Pos += QPoint(12, 6);
+        else if (position == LEFT_BOTTOM || position == LEFT_TOP)
+            Pos -= QPoint(12, -6);
+    }
+    return Pos;
 }
 
 void Socket::remove()

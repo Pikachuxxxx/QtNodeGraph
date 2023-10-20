@@ -36,6 +36,7 @@ public:
     void                        setPos(uint32_t x, uint32_t y);
     inline NodeScene*           getScene() { return scene; }
     inline const std::string&   getTitle() const { return title; }
+    void                        setTitle(const std::string& title);
     inline NodeContentWidget*   getContent() { return nodeContent; }
     inline void                 setContent(NodeContentWidget* widget) { nodeContent = widget; }
     inline IGraphicsNode*       getGraphicsNode() { return graphicsNode; }

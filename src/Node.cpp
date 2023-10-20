@@ -52,6 +52,13 @@ void Node::setPos(uint32_t x, uint32_t y)
     graphicsNode->setPos(x, y);
 }
 
+void Node::setTitle(const std::string& title)
+{
+    this->title = title;
+    graphicsNode->getTextItem()->setPlainText(title.c_str());
+    graphicsNode->update();
+}
+
 void Node::setGraphicsNode(IGraphicsNode* grNode)
 {
     auto oldPos = graphicsNode->pos();

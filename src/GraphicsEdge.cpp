@@ -22,9 +22,9 @@ GraphicsEdge::GraphicsEdge(NodeEdge* edge, QGraphicsItem* parent)
     penHovered = QPen("#FF37A6FF");
     pathDragPen.setStyle(Qt::DashLine);
     penSelected = QPen("#FFFFA637");
-    pathPen.setWidthF(2.5f);
-    penSelected.setWidthF(2.5f);
-    pathDragPen.setWidthF(2.5f);
+    pathPen.setWidthF(3.5f);
+    penSelected.setWidthF(3.5f);
+    pathDragPen.setWidthF(3.5f);
     penHovered.setWidth(5.0f);
 
     this->setZValue(-1);

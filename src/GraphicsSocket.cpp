@@ -58,13 +58,6 @@ GraphicsSocket::GraphicsSocket(Socket* socket, std::string colorHex)
     brush = QBrush(bgColor);
 
     this->setZValue(5);
-
-    // load the pixmaps
-    //QByteArray pinConnectedByteArray(PinEmptyImageData, )
-    //pinConnected.loadFromData(PinConnectedImageData)
-    pinConnected = QPixmap(":/nodegraph/input_pin_connected.png");
-
-    pinEmpty = QPixmap(":/nodegraph/input_pin_empty.png");
 }
 
 QRectF GraphicsSocket::boundingRect() const
@@ -95,7 +88,25 @@ QRectF GraphicsSocket::boundingRect() const
         QPainterPath path;
         path.addPolygon(arrowV);
         return path.boundingRect();
+    } else if (m_Socket->getStyle() == HEADSHOT) {
+        QPolygonF arrowV;
+        auto      spos = m_Socket->getSocketPos();
+        if (spos == LEFT_TOP || spos == LEFT_BOTTOM) {
+            arrowV = QPolygonF({QPointF(0.0, 0.0 - radius),
+                QPointF(0.0, 24.0 - radius),
+                QPointF(-16.0, 12.0 - radius),
+                QPointF(0.0, 0.0 - radius)});
+        } else {
+            arrowV = QPolygonF({QPointF(0.0, 0.0 - radius),
+                QPointF(0.0, 24.0 - radius),
+                QPointF(16.0, 12.0 - radius),
+                QPointF(0.0, 0.0 - radius)});
+        }
+        QPainterPath path;
+        path.addPolygon(arrowV);
+        return path.boundingRect();
     }
+
     return QRectF();
 }
 
@@ -147,6 +158,30 @@ void GraphicsSocket::paint(QPainter* painter, const QStyleOptionGraphicsItem* op
                 QPointF(8.0 - offset * 2, 0.0 - radius),
                 QPointF(0.0 - offset * 2, 0.0 - radius)});
         }
+
+        painter->drawPolygon(arrowV);
+    } else if (m_Socket->getStyle() == HEADSHOT) {
+        /**
+         * In head shot style the pin originated from the border of the Node outline and gives a small arrow like shape
+         * 
+         */
+
+        QPolygonF arrowV;
+        auto      spos = m_Socket->getSocketPos();
+        if (spos == LEFT_TOP || spos == LEFT_BOTTOM) {
+            arrowV = QPolygonF({QPointF(0.0, 0.0 - radius),
+                QPointF(0.0, 24.0 - radius),
+                QPointF(-16.0, 12.0 - radius),
+                QPointF(0.0, 0.0 - radius)});
+        } else {
+            arrowV = QPolygonF({QPointF(0.0, 0.0 - radius),
+                QPointF(0.0, 24.0 - radius),
+                QPointF(16.0, 12.0 - radius),
+                QPointF(0.0, 0.0 - radius)});
+        }
+
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(m_Socket->getNode()->getGraphicsNode()->getTitleBrush());
 
         painter->drawPolygon(arrowV);
     }

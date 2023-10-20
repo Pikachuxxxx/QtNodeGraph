@@ -50,6 +50,7 @@ void NodeGraphWidget::addDebugContent()
     text->setPos(getOrigin());
 #endif
 
+#if 0
     auto node   = new Node(m_Scene, "Test_Node_0", PIN, 2, 3);
     auto node_2 = new Node(m_Scene, "Test_Node_1", PIN, {"#00A5FF", "#00A5FF", "#00A5FF"}, {"#FFC0CB", "#FFC0CB"});
     auto node_3 = new Node(m_Scene, "Test_Node_2", PIN, {"#FFC0CB", "#FFC0CB"}, {"#F47174", "#F47174"});
@@ -59,6 +60,7 @@ void NodeGraphWidget::addDebugContent()
 
     auto edge   = new NodeEdge(m_Scene, node->getOutputSocket(0), node_2->getInputSocket(1), BEZIER);
     auto edge_2 = new NodeEdge(m_Scene, node_2->getOutputSocket(1), node_3->getInputSocket(0), BEZIER);
+#endif
 }
 
 QPoint NodeGraphWidget::getOrigin()

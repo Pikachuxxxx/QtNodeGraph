@@ -30,7 +30,8 @@ enum SocketStyle
 {
     CIRCLE,
     SQUARE,
-    PIN
+    PIN,
+    HEADSHOT
 };
 
 class Socket
