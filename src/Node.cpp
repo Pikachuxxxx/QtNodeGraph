@@ -7,8 +7,8 @@
 
 #include <QUndoCommand>
 
-Node::Node(NodeScene* scene, std::string nodeName, SocketStyle style, uint32_t inputsCount, uint32_t outputsCount)
-    : scene(scene), title(nodeName)
+Node::Node(NodeScene* scene, std::string nodeName, SocketStyle style, uint32_t inputsCount, uint32_t outputsCount, bool multiEdgesInput , bool multiEdgesOutput)
+    : scene(scene), title(nodeName), m_MultiEdgesInput(multiEdgesInput), m_MultiEdgesOutput(multiEdgesOutput)
 {
     nodeContent  = new NodeContentWidget;
     graphicsNode = new GraphicsNode(this);
@@ -17,18 +17,18 @@ Node::Node(NodeScene* scene, std::string nodeName, SocketStyle style, uint32_t i
     scene->getGraphicsScene()->addItem(graphicsNode);
 
     for (uint32_t i = 0; i < inputsCount; i++) {
-        auto socket = new Socket(this, SOCKET_INPUT, i, style, LEFT_BOTTOM);
+        auto socket = new Socket(this, SOCKET_INPUT, i, style, LEFT_BOTTOM, m_MultiEdgesInput);
         inputs.push_back(socket);
     }
 
     for (uint32_t i = 0; i < outputsCount; i++) {
-        auto socket = new Socket(this, SOCKET_OUTPUT, i, style, RIGHT_TOP);
+        auto socket = new Socket(this, SOCKET_OUTPUT, i, style, RIGHT_TOP, m_MultiEdgesOutput);
         outputs.push_back(socket);
     }
 }
 
-Node::Node(NodeScene* scene, std::string nodeName, SocketStyle style, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount)
-    : scene(scene), title(nodeName)
+Node::Node(NodeScene* scene, std::string nodeName, SocketStyle style, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount, bool multiEdgesInput, bool multiEdgesOutput)
+    : scene(scene), title(nodeName), m_MultiEdgesInput(multiEdgesInput), m_MultiEdgesOutput(multiEdgesOutput)
 {
     nodeContent  = new NodeContentWidget;
     graphicsNode = new GraphicsNode(this);
@@ -37,12 +37,12 @@ Node::Node(NodeScene* scene, std::string nodeName, SocketStyle style, std::vecto
     scene->getGraphicsScene()->addItem(graphicsNode);
 
     for (uint32_t i = 0; i < inputsCount.size(); i++) {
-        auto socket = new Socket(this, SOCKET_INPUT, i, style, LEFT_BOTTOM, false, inputsCount[i]);
+        auto socket = new Socket(this, SOCKET_INPUT, i, style, LEFT_BOTTOM, m_MultiEdgesInput, inputsCount[i]);
         inputs.push_back(socket);
     }
 
     for (uint32_t i = 0; i < outputsCount.size(); i++) {
-        auto socket = new Socket(this, SOCKET_OUTPUT, i, style, RIGHT_TOP, true, outputsCount[i]);
+        auto socket = new Socket(this, SOCKET_OUTPUT, i, style, RIGHT_TOP, m_MultiEdgesOutput, outputsCount[i]);
         outputs.push_back(socket);
     }
 }
@@ -157,7 +157,7 @@ void Node::update()
 
 void Node::addInputSocket(const std::string& name /*= "input_socket"*/, SocketStyle style /*= CIRCLE*/, SocketPos pos /*= LEFT_TOP*/, const std::string& hexColor /*= "FFFF7700"*/)
 {
-    auto socket = new Socket(this, SOCKET_INPUT, (uint32_t) inputs.size(), style, pos, false, hexColor, name);
+    auto socket = new Socket(this, SOCKET_INPUT, (uint32_t) inputs.size(), style, pos, m_MultiEdgesInput, hexColor, name);
     inputs.push_back(socket);
 
     graphicsNode->update();
@@ -174,7 +174,7 @@ void Node::removeInputSocket(uint32_t idx)
 
 void Node::addOutputSocket(const std::string& name /*= "input_socket"*/, SocketStyle style /*= CIRCLE*/, SocketPos pos /*= RIGHT_TOP*/, const std::string& hexColor /*= "#00A5FF"*/)
 {
-    auto socket = new Socket(this, SOCKET_OUTPUT, (uint32_t) outputs.size(), style, pos, true, hexColor, name);
+    auto socket = new Socket(this, SOCKET_OUTPUT, (uint32_t) outputs.size(), style, pos, m_MultiEdgesOutput, hexColor, name);
     outputs.push_back(socket);
 
     graphicsNode->update();

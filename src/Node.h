@@ -17,8 +17,8 @@ class Node
 {
 public:
     // TODO: Use a array for input and output counts that take the node colors/types in future
-    Node(NodeScene* scene, std::string nodeName, SocketStyle style, uint32_t inputsCount = 0, uint32_t outputsCount = 0);
-    Node(NodeScene* scene, std::string nodeName, SocketStyle style, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount);
+    Node(NodeScene* scene, std::string nodeName, SocketStyle style, uint32_t inputsCount = 0, uint32_t outputsCount = 0, bool multiEdgesInput = false, bool multiEdgesOutput = true);
+    Node(NodeScene* scene, std::string nodeName, SocketStyle style, std::vector<std::string> inputsCount, std::vector<std::string> outputsCount, bool multiEdgesInput = false, bool multiEdgesOutput = true);
     virtual ~Node() {}
 
     void remove();
@@ -53,7 +53,9 @@ private:
     NodeContentWidget*   nodeContent;
     std::vector<Socket*> inputs;
     std::vector<Socket*> outputs;
-    uint32_t             socketSpacing = 24;
+    uint32_t             socketSpacing      = 24;
+    bool                 m_MultiEdgesInput  = false;
+    bool                 m_MultiEdgesOutput = true;
 };
 
 // Commands for Undo and Redo
