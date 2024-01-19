@@ -29,6 +29,8 @@ public:
     inline std::vector<Node*>     getNodes() { return m_Nodes; }
     inline std::vector<NodeEdge*> getEdges() { return m_Edges; }
 
+    Node* getNodeByName(const std::string& name);
+
 private:
     NodeGraphicsScene*     m_GraphicsScene;
     std::vector<Node*>     m_Nodes;

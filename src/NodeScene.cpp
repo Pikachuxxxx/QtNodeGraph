@@ -1,5 +1,7 @@
 #include "NodeScene.h"
 
+#include "Node.h"
+
 NodeScene::NodeScene()
 {
     m_GraphicsScene = new NodeGraphicsScene;
@@ -25,4 +27,12 @@ void NodeScene::removeEdge(NodeEdge* edge)
 {
     if (std::find(m_Edges.begin(), m_Edges.end(), edge) != m_Edges.end())
         m_Edges.erase(std::remove(m_Edges.begin(), m_Edges.end(), edge), m_Edges.end());
+}
+
+Node* NodeScene::getNodeByName(const std::string& name)
+{
+    for (auto node: m_Nodes) {
+        if (node->getTitle() == name)
+            return node;
+    }
 }

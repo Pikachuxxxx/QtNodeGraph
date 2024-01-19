@@ -47,6 +47,4 @@ private:
     QPen    penHovered;
     QBrush  brush;
     bool    hover = false;
-    QPixmap pinConnected;
-    QPixmap pinEmpty;
 };
