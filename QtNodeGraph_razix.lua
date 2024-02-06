@@ -43,7 +43,7 @@ project "QtNodeGraph"
    qtprefix "Qt5"
 
 
-   qtgenerateddir "%{prj.location}/../src/generated"
+   qtgenerateddir "%{prj.location}/../Editor/src/generated"
 
    files
    {
