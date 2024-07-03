@@ -5,7 +5,7 @@ local qt = premake.extensions.qt
 project "example"
     kind "ConsoleApp"
     language "C++"
-    cppdialect "C++17"
+    cppdialect (engine_global_config.cpp_dialect)
     staticruntime "off"
         -- Debugging directory = where the main premake5.lua is located
     debugdir "%{wks.location}../"
